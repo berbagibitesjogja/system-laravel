@@ -115,7 +115,7 @@ class CalendarNotification extends Command
                 }
             }
         } catch (\Throwable $th) {
-            return BotController::sendForPublic('6289636055420', $th->getMessage(), AppConfiguration::useWhatsapp());
+            return BotController::sendForPublic('120363399651067268@g.us', "[ERROR]\n\nNeed GCALENDAR Refresh Token", AppConfiguration::useWhatsapp());
         }
     }
 }

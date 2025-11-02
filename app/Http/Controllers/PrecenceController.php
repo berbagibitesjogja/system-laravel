@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormJob;
 use App\Models\Volunteer\Attendance;
 use App\Models\Volunteer\Precence;
+use App\Traits\SendWhatsapp;
 use Ballen\Distical\Calculator;
 use Ballen\Distical\Entities\LatLong;
 use Illuminate\Http\Request;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PrecenceController extends Controller
 {
+    use SendWhatsapp;
     public function calculateDistance($startLat, $startLong, $endLat, $endLong)
     {
         $ipswich = new LatLong($startLat, $startLong);
@@ -20,7 +23,6 @@ class PrecenceController extends Controller
 
         return round($distance->asKilometres() * 1000);
     }
-
     public function userAttendance(Request $request)
     {
         $precence = Precence::where('code', $request->precenceCode)->where('status', 'active')->get();
@@ -28,24 +30,36 @@ class PrecenceController extends Controller
             return response()->json(['message' => 'Presensi tidak ditemukan', 'data' => $request->all()], 404);
         }
         $precence = $precence[0];
+        $user = Auth::user();
         $distance = $this->calculateDistance($request->precenceLat, $request->precenceLong, $request->userLat, $request->userLong);
         if ($distance > $precence->max_distance) {
+            $this->failedAttendance($user, $precence);
             return response()->json(["message" => "Presensi tidak ditemukan", "data" => $request->all()], 404);
         }
-        if (Attendance::where('user_id', Auth::user()->id)->where('precence_id', $precence->id)->get()->count() == 1) {
+        if (Attendance::where('user_id', $user->id)->where('precence_id', $precence->id)->get()->count() == 1) {
             return response()->json([$request->all(), $precence], 200);
         }
         try {
             Attendance::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $user->id,
                 'precence_id' => $precence->id,
                 'distance' => $distance,
             ]);
         } catch (\Throwable $th) {
+            $this->failedAttendance($user, $precence);
             return response()->json($th->getMessage(), 404);
         }
 
         return response()->json([$request->all(), $precence], 200);
+    }
+
+    private function failedAttendance($user, $precence)
+    {
+        $now = now()->toDateString();
+        $phone = $user->phone;
+        $jobs = FormJob::where('data', 'LIKE', "%$now%")->where('data', 'LIKE', "%$phone%")->count() != 0 ? 'Yes' : 'No';
+        $message = "[ERROR] Presensi gagal\n\nEmail : {$user->email}\nUser ID : {$user->id}\nPrecence ID : {$precence->id}\nVerified : $jobs";
+        $this->send('120363399651067268@g.us', $message);
     }
 
     public function index()

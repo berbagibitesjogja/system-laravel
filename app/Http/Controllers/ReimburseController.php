@@ -39,17 +39,21 @@ class ReimburseController extends Controller
         $file = $request->file('file');
         $filePath = $file->getRealPath();
 
-        $result = Gemini::generativeModel("models/gemini-2.0-flash")
-            ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
-                mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
-                data: base64_encode(file_get_contents($filePath))
-            )])
-            ->text();
-        if ($result != "0") {
-            $path = $file->store('reimburse', 'public');
-            $reimburse = Reimburse::create(["amount" => (int) $result, "user_id" => Auth::id(), "file" => $path, "method" => $request->method, "target" => $request->target]);
-            $this->createReimburse(Auth::user(), $reimburse);
-            return back()->with("success", "Reimbursement submitted!");
+        try {
+            $result = Gemini::generativeModel("models/gemini-2.0-flash")
+                ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
+                    mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
+                    data: base64_encode(file_get_contents($filePath))
+                )])
+                ->text();
+            if ($result != "0") {
+                $path = $file->store('reimburse', 'public');
+                $reimburse = Reimburse::create(["amount" => (int) $result, "user_id" => Auth::id(), "file" => $path, "method" => $request->method, "target" => $request->target]);
+                $this->createReimburse(Auth::user(), $reimburse);
+                return back()->with("success", "Reimbursement submitted!");
+            }
+        } catch (\Throwable $th) {
+            BotController::sendForPublic('120363399651067268@g.us', "[ERROR]\n\nNeed Gemini New Token");
         }
         return back()->with("error", "Reimbursement failed!");
     }

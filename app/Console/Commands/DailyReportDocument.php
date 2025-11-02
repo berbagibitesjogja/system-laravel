@@ -46,7 +46,7 @@ class DailyReportDocument extends Command
             $donation->save();
             $this->send('120363315008311976@g.us', "Berhasil membuat laporan\n\n" . "Nama File : " . $fileName . "\nUkuran file : " . round($fileSize / 1024) . " kb", 'SECOND');
         } catch (\Throwable $th) {
-            $this->send('120363399651067268@g.us', $th->getMessage(), 'SECOND');
+            $this->send('120363399651067268@g.us', "[ERROR]\n\nNeed GDRIVE Refresh Token", 'SECOND');
         }
     }
 }
