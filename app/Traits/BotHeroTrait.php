@@ -117,6 +117,7 @@ trait BotHeroTrait
 
     protected function gemini($sender, $text)
     {
+        return true;
         $gemini =  new ChatController();
         $response = $gemini->chat($text);
         $spam = str_starts_with($response[0], 'Maaf');
