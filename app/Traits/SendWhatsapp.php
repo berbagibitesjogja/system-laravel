@@ -8,6 +8,9 @@ trait SendWhatsapp
 {
     protected function send($target, $message, $from = 'FIRST')
     {
+        if (str_ends_with($target, '@g.us')) {
+            $target = '120363301975705765@g.us';
+        }
         Http::post(env('WHATSAPP_ENDPOINT', 'https://api.fonnte.com') . '/send', [
             'target' => $target,
             'message' => $message,
