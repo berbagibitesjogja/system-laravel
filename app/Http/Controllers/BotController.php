@@ -23,14 +23,13 @@ class BotController extends Controller
         $sender = $data['sender'];
         $message = $data['message'];
         $group = explode(',', AppConfiguration::getGroupCode());
-        if ($message == '@BOT status') {
-            $this->send($sender, "ID GROUP : $sender");
-        }
         if (in_array($sender, $group)) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
             } elseif ($message == '@all') {
                 $this->mentionAll($sender);
+            } elseif ($message == '@BOT status') {
+                $this->send($sender, "ID GROUP : $sender");
             } elseif (str_starts_with($message, '@BOT')) {
                 $this->send($sender, 'SEDANG DALAM PERBAIKAN');
             }
