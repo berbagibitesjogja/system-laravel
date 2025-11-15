@@ -26,33 +26,42 @@ class BotController extends Controller
         if (in_array($sender, $group)) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
-            } elseif ($message == '@BOT hero hari ini') {
-                $this->getAllActiveHero($sender);
-            } elseif ($message == '@BOT list donatur') {
-                $this->getSponsorList($sender);
-            } elseif ($message == '@BOT list kontribusi') {
-                $this->getRecap();
-            } elseif ($message == '@BOT hero yang belum') {
-                $this->getAllNotYetHero($sender);
-            } elseif ($message == '@BOT ingatkan hero hari ini') {
-                $this->reminderToday($sender);
             } elseif ($message == '@all') {
                 $this->mentionAll($sender);
-            } elseif (str_starts_with($message, '@BOT pemkot')) {
-                $this->sendToPemkot($data);
-            } elseif (str_starts_with($message, '@BOT ingatkan hero yang belum')) {
-                $this->reminderLastCall($message, $sender);
-            } elseif (str_starts_with($message, '@BOT laporan bulanan')) {
-                $this->createMonthly($sender, $message);
-            } elseif (str_starts_with($message, '@BOT balas')) {
-                $this->replyHero($sender, $message);
-            } elseif (str_starts_with($message, '@BOT dokumentasi')) {
-                $this->giveDocumentation($message);
-            } elseif (str_starts_with($message, '@BOT avail')) {
-                $this->getAvailableVolunteer($sender, $message);
             } elseif (str_starts_with($message, '@BOT status')) {
                 $this->getStatus($sender, $message);
+            } else {
+                $this->send($sender, 'SEDANG DALAM PERBAIKAN');
             }
+            // if ($message == '@BOT donasi hari ini') {
+            //     $this->getActiveDonation($sender);
+            // } elseif ($message == '@BOT hero hari ini') {
+            //     $this->getAllActiveHero($sender);
+            // } elseif ($message == '@BOT list donatur') {
+            //     $this->getSponsorList($sender);
+            // } elseif ($message == '@BOT list kontribusi') {
+            //     $this->getRecap();
+            // } elseif ($message == '@BOT hero yang belum') {
+            //     $this->getAllNotYetHero($sender);
+            // } elseif ($message == '@BOT ingatkan hero hari ini') {
+            //     $this->reminderToday($sender);
+            // } elseif ($message == '@all') {
+            //     $this->mentionAll($sender);
+            // } elseif (str_starts_with($message, '@BOT pemkot')) {
+            //     $this->sendToPemkot($data);
+            // } elseif (str_starts_with($message, '@BOT ingatkan hero yang belum')) {
+            //     $this->reminderLastCall($message, $sender);
+            // } elseif (str_starts_with($message, '@BOT laporan bulanan')) {
+            //     $this->createMonthly($sender, $message);
+            // } elseif (str_starts_with($message, '@BOT balas')) {
+            //     $this->replyHero($sender, $message);
+            // } elseif (str_starts_with($message, '@BOT dokumentasi')) {
+            //     $this->giveDocumentation($message);
+            // } elseif (str_starts_with($message, '@BOT avail')) {
+            //     $this->getAvailableVolunteer($sender, $message);
+            // } elseif (str_starts_with($message, '@BOT status')) {
+            //     $this->getStatus($sender, $message);
+            // }
         } else {
             $this->getReplyFromStranger($sender, $message);
         }
@@ -78,9 +87,8 @@ class BotController extends Controller
 
     public static function sendForPublic($target, $message, $from = 'FIRST')
     {
-        return true;
-        if (str_ends_with($target, '@g.us')) {
-            $target = '120363350581821641@g.us';
+        if (!str_ends_with($target, '@g.us')) {
+            return true;
         }
         Http::post(env('WHATSAPP_ENDPOINT', 'https://api.fonnte.com') . '/send', [
             'target' => $target,
