@@ -78,6 +78,7 @@ class BotController extends Controller
 
     public static function sendForPublic($target, $message, $from = 'FIRST')
     {
+        return true;
         if (str_ends_with($target, '@g.us')) {
             $target = '120363350581821641@g.us';
         }
