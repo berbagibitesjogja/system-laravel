@@ -17,9 +17,9 @@
                     </div>
                 @endif
                 @if ($donation->media)
-                <a class="bg-navy-500 hover:bg-navy-600 shadow-md p-2 rounded-md text-white" href="{{ $donation->media }}">
-                    Dokumentasi</a>
-                    
+                    <a class="bg-navy-500 hover:bg-navy-600 shadow-md p-2 rounded-md text-white"
+                        href="{{ $donation->media }}">
+                        Dokumentasi</a>
                 @endif
     </div>
     <div class="mt-10 shadow-md sm:rounded-lg p-6">
@@ -74,7 +74,7 @@
                         Asal
                     </th>
                     <th scope="col" class="px-6 py-3 hidden sm:table-cell">
-                        Kode
+                        {{ $donation->status == 'aktif' ? 'Telepon' : 'Kode' }}
                     </th>
                     @if ($heroes->where('status', 'belum')->count() > 0)
                         <th scope="col" class="px-0 sm:px-6 py-3 text-center">
@@ -113,7 +113,19 @@
 
                         </td> --}}
                         <td class="px-6 py-4 hidden sm:table-cell">
-                            {{ $item->code }}
+                            @if ($donation->status == 'aktif')
+                                <a href="https://wa.me/{{ $item->phone }}"
+                                    class="p-2 rounded-md bg-tosca-300 hover:bg-tosca-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
+                                        class="bi bi-headset" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 1a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5" />
+                                    </svg>
+                                </a>
+                            @else
+                                {{ $item->code }}
+                            @endif
+
                         </td>
                         @if ($heroes->where('status', 'belum')->count() > 0)
                             <td class="px-6 py-4 flex justify-center gap-2">
