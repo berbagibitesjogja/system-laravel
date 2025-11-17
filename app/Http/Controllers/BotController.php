@@ -64,6 +64,9 @@ class BotController extends Controller
         if (str_starts_with($text, "> Verify")) {
             return $this->verifyFoodHeroes($sender, $text);
         }
+        if (str_starts_with($text, "> Verifikasi")) {
+            return $this->verifyNotify($sender, $text);
+        }
         if ($hero) {
             $this->getReplyFromHeroes($hero, $text);
         } elseif ($foodDonator) {

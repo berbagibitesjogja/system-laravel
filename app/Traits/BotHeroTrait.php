@@ -37,6 +37,22 @@ trait BotHeroTrait
             $this->send($sender, 'Maaf signature key tidak valid');
         }
     }
+    protected function verifyNotify($sender, $text)
+    {
+        preg_match('/_(.*?)_/', $text, $match);
+        $code = $match[1] ?? null;
+        $data = explode(',', $this->decryptData($code));
+        $name = $data[0];
+        $email = $data[1];
+        $phone = $data[2];
+        Notify::create(compact('name', 'email', 'phone'));
+        $this->send(
+            $sender,
+            "Terima kasih {$name}, verifikasi berhasil! 🎉\n\n" .
+                "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
+                "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊"
+        );
+    }
     protected function getReplyFromHeroes($hero, $text)
     {
         $message = '> Balasan Heroes' . " \n\n" . $hero->name . "\n_Kode : " . $hero->code . "_\n\n" . $text;

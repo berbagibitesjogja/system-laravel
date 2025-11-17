@@ -13,6 +13,7 @@ use App\Models\Volunteer\Notify;
 use App\Models\Volunteer\Precence;
 use App\Models\Volunteer\User;
 use App\Traits\SendWhatsapp;
+use App\Traits\TwoWayEncryption;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class VolunteerController extends Controller
 {
-    use SendWhatsapp;
+    use SendWhatsapp, TwoWayEncryption;
     public function home()
     {
         if (! Auth::user()) {
@@ -174,12 +175,16 @@ class VolunteerController extends Controller
                 return redirect()->route('volunteer.home')->with('error', 'Email tidak valid');
             }
             try {
-                Notify::create([
-                    "name" => $user->name,
-                    "email" => $user->email,
-                    "phone" => $phone
-                ]);
-                return redirect()->route('volunteer.home')->with('success', 'Anda berhasil mendaftar');
+
+                $now = now();
+                $code = $this->encryptData("{$user->name},{$user->email},{$user->phone},{$now}");
+                $text = rawurlencode(
+                    "> Verifikasi\n\n" .
+                        "Halo Minje! 👋\n" .
+                        "Aku ingin mengaktifkan fitur *Dapatkan Notifikasi* untuk info donasi BBJ.\n\n" .
+                        "Kode Verifikasi: _{$code}_"
+                );
+                return redirect("https://wa.me/6285117773642?text={$text}");
             } catch (\Throwable $th) {
                 return redirect()->route('volunteer.home')->with('error', 'Anda sudah terdaftar');
             }

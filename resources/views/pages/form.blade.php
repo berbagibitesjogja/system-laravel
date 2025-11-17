@@ -34,8 +34,7 @@
                         </div>
                     </a>
                     <a href={{ route('hero.cancel') }}
-                        class="text-sm bg-red-600 hover:bg-navy-800 mt-8 w-max rounded-md py-2 px-4 m-auto text-center block text-white font-medium text-center italic">Dapatkan
-                        Batalkan</a>
+                        class="text-sm bg-red-600 hover:bg-navy-800 mt-8 w-max rounded-md py-2 px-4 m-auto text-center block text-white font-medium text-center italic">Batalkan</a>
                 </div>
                 <div class="w-full rounded-lg bg-white shadow-xl mt-8 py-5 px-6">
                     <h1 class="text-md text-navy font-medium text-center italic mb-4">Informasi Pengambilan
