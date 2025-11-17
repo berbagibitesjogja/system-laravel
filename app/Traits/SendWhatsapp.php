@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\AppConfiguration;
 use Illuminate\Support\Facades\Http;
 
 trait SendWhatsapp
@@ -20,7 +21,7 @@ trait SendWhatsapp
     public static function send($target, $message, $from = 'FIRST')
     {
         $curl = curl_init();
-
+        $token = AppConfiguration::whereKey("FONNTE_$from")->first()->value;
         curl_setopt_array($curl, [
             CURLOPT_URL => 'https://api.fonnte.com/send',
             CURLOPT_RETURNTRANSFER => true,
@@ -39,7 +40,7 @@ trait SendWhatsapp
                 'countryCode' => '62',
             ],
             CURLOPT_HTTPHEADER => [
-                'Authorization: ' . env("WHATSAPP_FONNTE_" . $from),
+                'Authorization: ' . $token,
             ],
         ]);
 
