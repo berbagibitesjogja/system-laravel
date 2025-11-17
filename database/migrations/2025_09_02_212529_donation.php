@@ -31,7 +31,7 @@ return new class extends Migration
             $table->date('take');
             $table->integer('hour')->default(12);
             $table->integer('minute')->default(0);
-            $table->string('location')->default('Podocarpus Cafe');
+            $table->string('location')->default('Pusat Studi Pancasila');
             $table->string('maps')->default('https://maps.app.goo.gl/eesnA6CN5fAQrGfP9');
             $table->string('message')->nullable();
             $table->text('notes')->nullable();
