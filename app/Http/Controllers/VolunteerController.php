@@ -177,7 +177,7 @@ class VolunteerController extends Controller
             try {
 
                 $now = now();
-                $code = $this->encryptData("{$user->name},{$user->email},{$user->phone},{$now}");
+                $code = $this->encryptData("{$user->name},{$user->email},{$phone},{$now}");
                 $text = rawurlencode(
                     "> Verifikasi\n\n" .
                         "Halo Minje! 👋\n" .
