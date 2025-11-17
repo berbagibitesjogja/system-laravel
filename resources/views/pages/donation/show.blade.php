@@ -74,7 +74,7 @@
                         Asal
                     </th>
                     <th scope="col" class="px-6 py-3 hidden sm:table-cell">
-                        {{ $donation->status == 'aktif' ? 'Telepon' : 'Kode' }}
+                        Kode
                     </th>
                     @if ($heroes->where('status', 'belum')->count() > 0)
                         <th scope="col" class="px-0 sm:px-6 py-3 text-center">
@@ -113,13 +113,7 @@
 
                         </td> --}}
                         <td class="px-6 py-4 hidden sm:table-cell">
-                            @if ($donation->status == 'aktif')
-                                <a href="https://wa.me/{{ $item->phone }}">
-                                    {{ $item->phone }}
-                                </a>
-                            @else
-                                {{ $item->code }}
-                            @endif
+                            {{ $item->code }}
 
                         </td>
                         @if ($heroes->where('status', 'belum')->count() > 0)
