@@ -24,7 +24,7 @@ trait BotHeroTrait
             $message =
                 "🎉 Halo {$hero->name}!\n\n" .
                 "Terima kasih sudah mendaftar sebagai Food Hero BBJ 🌱✨\n" .
-                "Berikut adalah *kode penukaranmu*: **{$hero->code}** 🔑\n\n" .
+                "Berikut adalah *kode penukaranmu*: *{$hero->code}* 🔑\n\n" .
                 "📅 Tanggal: " . Carbon::parse($hero->donation->take)->format('d F Y') . "\n" .
                 "⏰ Waktu: " . str_pad($hero->donation->hour, 2, '0', STR_PAD_LEFT) . ":" . str_pad($hero->donation->minute, 2, '0', STR_PAD_LEFT) . "\n" .
                 "📍 Lokasi: {$hero->donation->location}\n" .
