@@ -193,6 +193,9 @@ class VolunteerController extends Controller
         if (! $volunteer) {
             return redirect()->route('volunteer.home')->with('error', 'Anda tidak terdaftar');
         }
+        $volunteer->name = $user->name;
+        $volunteer->photo = $user->avatar;
+        $volunteer->save();
         if (session('job')) {
             if ($volunteer->cancelation) {
                 $message = "Maaf kamu tidak bisa mendaftar hingga " . $volunteer->cancelation->banned;
@@ -330,12 +333,6 @@ class VolunteerController extends Controller
             });
             return redirect()->away('https://war.berbagibitesjogja.com');
         }
-
-
-
-        $volunteer->name = $user->name;
-        $volunteer->photo = $user->avatar;
-        $volunteer->save();
         Auth::login($volunteer);
         activity()
             ->causedBy($volunteer)
