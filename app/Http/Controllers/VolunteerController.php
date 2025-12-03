@@ -196,8 +196,10 @@ class VolunteerController extends Controller
         if (session('job')) {
             if ($volunteer->cancelation) {
                 $message = "Maaf kamu tidak bisa mendaftar hingga " . $volunteer->cancelation->banned;
-                dispatch(function () use ($volunteer, $message) {
+                $messageS = $volunteer->name . " tidak bisa mendaftar karena terkena banned hingga " . $volunteer->cancelation->banned;
+                dispatch(function () use ($volunteer, $message, $messageS) {
                     $this->send($volunteer->phone, $message);
+                    $this->send("120363330280278639@g.us", $messageS);
                 });
                 return redirect()->away('https://war.berbagibitesjogja.com');
             }
