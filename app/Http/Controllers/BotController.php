@@ -87,7 +87,7 @@ class BotController extends Controller
     //         'message' => $message,
     //     ]);
     // }
-    public static function sendForPublic($target, $message, $from)
+    public static function sendForPublic($target, $message, $from = 'FIRST')
     {
         $curl = curl_init();
         if (!str_ends_with($target, '@g.us')) {
