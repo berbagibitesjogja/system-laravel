@@ -53,6 +53,8 @@ class ReimburseController extends Controller
                 return back()->with("success", "Reimbursement submitted!");
             }
         } catch (\Throwable $th) {
+            logs()->info(json_encode($th));
+            logs()->info(json_encode($th->getMessage()));
             BotController::sendForPublic('120363399651067268@g.us', "[ERROR]\n\nNeed Gemini New Token");
         }
         return back()->with("error", "Reimbursement failed!");
