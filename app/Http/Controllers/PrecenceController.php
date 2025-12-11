@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FormJob;
 use App\Models\Volunteer\Attendance;
 use App\Models\Volunteer\Precence;
+use App\Models\Volunteer\User;
 use App\Traits\SendWhatsapp;
 use Ballen\Distical\Calculator;
 use Ballen\Distical\Entities\LatLong;
@@ -57,9 +58,10 @@ class PrecenceController extends Controller
     {
         $now = now()->toDateString();
         $phone = $user->phone;
+        $link = route('precence.show', $precence->id);
         $jobs = FormJob::where('data', 'LIKE', "%$now%")->where('data', 'LIKE', "%$phone%")->count() != 0 ? 'Yes' : 'No';
-        $message = "[ERROR] Presensi gagal\n\nEmail : {$user->email}\nUser ID : {$user->id}\nPrecence ID : {$precence->id}\nVerified : $jobs";
-        $this->send('120363399651067268@g.us', $message);
+        $message = "[ERROR] Presensi gagal\n\nNama : {$user->name}\nPresensi : {$precence->title}\nVerified : $jobs\n\nTolong segera ditambahkan manual di: $link";
+        $this->send('120363345260659733@g.us', $message);
     }
 
     public function index()
@@ -89,8 +91,24 @@ class PrecenceController extends Controller
     {
         $user = Auth::user();
         $attendances = $precence->attendance();
-
-        return view('pages.precence.show', compact('precence', 'attendances'));
+        $yet = User::whereRole('member')->whereNotIn('id', $precence->attendance->pluck('id'))->get();
+        return view('pages.precence.show', compact('precence', 'attendances', 'yet'));
+    }
+    public function manual(Request $request, Precence $precence)
+    {
+        if (Attendance::where('user_id', $request->user_id)->where('precence_id', $precence->id)->get()->count() == 1) {
+            return back();
+        }
+        try {
+            Attendance::create([
+                'user_id' => $request->user_id,
+                'precence_id' => $precence->id,
+                'distance' => 10,
+            ]);
+        } catch (\Throwable $th) {
+            return back();
+        }
+        return back();
     }
 
     public function edit(Precence $precence)

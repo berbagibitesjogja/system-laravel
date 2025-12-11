@@ -10,6 +10,18 @@
                 <h1>Judul : {{ $precence->title }}</h1>
                 <h1>Hadir : {{ $precence->attendance->count() }}</h1>
             </div>
+            <div>
+                <form method="POST" action="{{ route('attendance.manual', ['precence' => $precence->id]) }}">
+                    @csrf
+                    <select name="user_id" id="id" class="border border-1 border-blue p-2 rounded-md bg-gray-100">
+                        <option value="">Masukkan Manual</option>
+                        @foreach ($yet as $vol)
+                            <option value="{{ $vol->id }}">{{ $vol->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class='bg-navy-500 rounded-md py-1 text-white px-3'>Tambah</button>
+                </form>
+            </div>
             <table class="mt-6 shadow-md sm:rounded-lg text-center w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>

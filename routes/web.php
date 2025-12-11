@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('availability/{time}', 'time')->name('time');
     });
     Route::get('availability/{codes}/{status}', [AvailabilityController::class, 'update']);
+    Route::post('attendance/precence/{precence}', [PrecenceController::class, 'manual'])->name('attendance.manual');
     Route::resource('volunteer/precence', PrecenceController::class);
     Route::resource('volunteer', VolunteerController::class);
     Route::resource('food', FoodController::class)->except(['show', 'create']);
