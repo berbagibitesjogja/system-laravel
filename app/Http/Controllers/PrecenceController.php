@@ -92,7 +92,7 @@ class PrecenceController extends Controller
         $user = Auth::user();
         $attendances = $precence->attendance();
         $yet = User::whereRole('member')->whereNotIn('id', $precence->attendance->pluck('id'))->get();
-        return view('pages.precence.show', compact('precence', 'attendances', 'yet'));
+        return view('pages.precence.show', compact('precence', 'attendances', 'yet', 'user'));
     }
     public function manual(Request $request, Precence $precence)
     {
