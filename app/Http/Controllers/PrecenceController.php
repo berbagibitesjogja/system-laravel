@@ -61,7 +61,7 @@ class PrecenceController extends Controller
         $link = route('precence.show', $precence->id);
         $jobs = FormJob::where('data', 'LIKE', "%$now%")->where('data', 'LIKE', "%$phone%")->count() != 0 ? 'Yes' : 'No';
         $message = "[ERROR] Presensi gagal\n\nNama : {$user->name}\nPresensi : {$precence->title}\nVerified : $jobs\n\nTolong segera ditambahkan manual di: $link";
-        $this->send('120363345260659733@g.us', $message);
+        $this->send('120363331268762938@g.us', $message);
     }
 
     public function index()
