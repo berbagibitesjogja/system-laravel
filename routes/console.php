@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('que:work --stop-when-empty')->timezone('Asia/Jakarta')->everyFiveSeconds();
 Schedule::command('follow-up:all')->timezone('Asia/Jakarta')->dailyAt('08.00')->name('Kirim notifikasi staff');
 Schedule::command('follow-up:staff')->timezone('Asia/Jakarta')->dailyAt('08.00')->name('Kirim notifikasi petugas');
 Schedule::command('follow-up:all')->timezone('Asia/Jakarta')->dailyAt('16.00')->name('Kirim notifikasi staff');
