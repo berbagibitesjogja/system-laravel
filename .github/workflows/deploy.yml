@@ -79,3 +79,4 @@ jobs:
             cd /var/www/app
             docker pull disyfa/bbj-laravel:latest
             docker compose up -d
+            docker exec -d bbj-laravel php artisan queue:work --sleep=3 --tries=3 --timeout=60
