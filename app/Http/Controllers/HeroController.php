@@ -240,6 +240,6 @@ class HeroController extends Controller implements HasMiddleware
 
     public function getFaculties(University $university)
     {
-        return response()->json($university->faculties);
+        return response()->json($university->fakultas);
     }
 }

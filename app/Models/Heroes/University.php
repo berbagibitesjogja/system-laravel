@@ -25,6 +25,11 @@ class University extends Model
         return $this->hasMany(Faculty::class)->with('heroes');
     }
 
+    public function fakultas()
+    {
+        return $this->hasMany(Faculty::class);
+    }
+
     public function heroes()
     {
         return $this->hasManyThrough(Hero::class, Faculty::class);
