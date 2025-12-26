@@ -4,7 +4,9 @@ ENV SERVER_NAME=":80"
 
 WORKDIR /app
 
-COPY . /app 
+RUN apt-get update && apt-get install -y \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN install-php-extensions \
     pdo_mysql \
@@ -19,6 +21,15 @@ RUN install-php-extensions \
 
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
-RUN composer install
-RUN composer update
+COPY . /app
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
 RUN php artisan storage:link || true
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
