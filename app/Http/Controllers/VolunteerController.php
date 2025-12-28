@@ -324,7 +324,7 @@ class VolunteerController extends Controller
                     });
                 } else {
                     Cancelation::create(['user_id' => $volunteer->id]);
-                    $message = "Halo kamu punya kesempatan 1 kali lagi sebelum terkena banned " . $volunteer->cancelation->banned;
+                    $message = "Halo kamu punya kesempatan 1 kali lagi sebelum terkena banned jika membatalkan lagi.";
                     dispatch(function () use ($volunteer, $message) {
                         $this->send($volunteer->phone, $message);
                     });
