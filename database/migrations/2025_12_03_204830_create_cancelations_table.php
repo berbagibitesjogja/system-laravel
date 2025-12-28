@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create('cancelations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->date('banned');
+            $table->date('banned')->nullable();
+            $table->integer('tries')->default(1);
             $table->timestamps();
         });
     }

@@ -27,5 +27,6 @@ class ClearCancelation extends Command
     public function handle()
     {
         Cancelation::whereDate('banned', now()->toDateString())->delete();
+        Cancelation::whereNull('banned')->whereTries(1)->delete();
     }
 }

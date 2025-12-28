@@ -197,7 +197,7 @@ class VolunteerController extends Controller
         $volunteer->photo = $user->avatar;
         $volunteer->save();
         if (session('job')) {
-            if ($volunteer->cancelation) {
+            if ($volunteer->cancelation?->banned) {
                 $message = "Maaf kamu tidak bisa mendaftar hingga " . $volunteer->cancelation->banned;
                 $messageS = $volunteer->name . " tidak bisa mendaftar karena terkena banned hingga " . $volunteer->cancelation->banned;
                 dispatch(function () use ($volunteer, $message, $messageS) {
@@ -312,11 +312,23 @@ class VolunteerController extends Controller
                 $apply->save();
             }
             if ($volunteer->role == 'member') {
-                Cancelation::create(['user_id' => $volunteer->id, 'banned' => now()->addDays(14)]);
-                $message = "Halo kamu tidak bisa mendaftar lagi hingga " . $volunteer->cancelation->banned;
-                dispatch(function () use ($volunteer, $message) {
-                    $this->send($volunteer->phone, $message);
-                });
+                if ($volunteer->cancelation) {
+                    $volunteer->cancelation->tries += 1;
+                    if ($volunteer->cancelation->tries == 2) {
+                        $volunteer->cancelation->banned = now()->addDays(14 * $volunteer->cancelation->tries);
+                    }
+                    $volunteer->cancelation->save();
+                    $message = "Halo kamu tidak bisa mendaftar lagi hingga " . $volunteer->cancelation->banned;
+                    dispatch(function () use ($volunteer, $message) {
+                        $this->send($volunteer->phone, $message);
+                    });
+                } else {
+                    Cancelation::create(['user_id' => $volunteer->id]);
+                    $message = "Halo kamu punya kesempatan 1 kali lagi sebelum terkena banned " . $volunteer->cancelation->banned;
+                    dispatch(function () use ($volunteer, $message) {
+                        $this->send($volunteer->phone, $message);
+                    });
+                }
             }
             $message = $volunteer->name
                 . " membatalkan ikut"
