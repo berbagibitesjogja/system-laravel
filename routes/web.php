@@ -18,13 +18,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
-Route::get('/sad', function () {
-    $client = Gemini::client(config('gemini.api_key'));
-    $models = $client->models()->list()->models;
-    foreach ($models as $model) {
-        echo $model->name . '<br>';
-    }
-});
 Route::get('apply/{entry}/{job}', [VolunteerController::class, 'applyJob']);
 Route::get('un-apply/{entry}/{job}', [VolunteerController::class, 'unapplyJob']);
 Route::get('monthly-report/{code}', [ReportController::class, 'downloadMonthly'])->name('monthlyReport');
