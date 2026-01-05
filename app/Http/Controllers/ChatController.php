@@ -8,7 +8,7 @@ use App\Models\Donation\Sponsor;
 use App\Models\Heroes\Hero;
 use App\Models\Heroes\University;
 use Gemini\Data\GenerationConfig;
-use Gemini\Laravel\Facades\Gemini;
+use Gemini;
 
 class ChatController extends Controller
 {

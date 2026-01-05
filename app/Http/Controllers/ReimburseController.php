@@ -8,7 +8,7 @@ use App\Traits\BotVolunteerTrait;
 use App\Traits\SendWhatsapp;
 use Gemini\Data\Blob;
 use Gemini\Enums\MimeType;
-use Gemini\Laravel\Facades\Gemini;
+use Gemini;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
