@@ -40,7 +40,7 @@ class ReimburseController extends Controller
         $filePath = $file->getRealPath();
 
         try {
-            $result = Gemini::generativeModel("models/gemini-1.5-flash")
+            $result = Gemini::generativeModel("models/gemini-2.0-flash")
                 ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
                     mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
                     data: base64_encode(file_get_contents($filePath))
@@ -55,7 +55,7 @@ class ReimburseController extends Controller
         } catch (\Throwable $th) {
             logs()->info(json_encode($th));
             logs()->info(json_encode($th->getMessage()));
-            BotController::sendForPublic('120363399651067268@g.us', "[ERROR] Reimburse\n" . $th->getMessage());
+            BotController::sendForPublic('120363399651067268@g.us', "[ERROR] Reimburse Store\n" . $th->getMessage());
         }
         return back()->with("error", "Reimbursement failed!");
     }
