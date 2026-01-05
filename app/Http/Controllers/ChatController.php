@@ -112,12 +112,12 @@ class ChatController extends Controller
         $generationConfig = new GenerationConfig(
             maxOutputTokens: 3000,
         );
-
-        $result = Gemini::generativeModel("models/gemini-3-flash")
+        $client = Gemini::client(config('gemini.api_key'));
+        $result = $client->generativeModel("models/gemini-3-flash")
             ->withGenerationConfig($generationConfig)
             ->generateContent($text)
             ->text();
-        $token = Gemini::generativeModel("models/gemini-3-flash")
+        $token = $client->generativeModel("models/gemini-3-flash")
             ->countTokens($text)
             ->totalTokens;
 
