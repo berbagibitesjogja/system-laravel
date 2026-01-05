@@ -41,7 +41,7 @@ class ReimburseController extends Controller
 
         try {
             $client = Gemini::client(config('gemini.api_key'));
-            $result = $client->generativeModel("gemini-3-flash")
+            $result = $client->generativeModel("models/gemini-2.5-flash")
                 ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
                     mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
                     data: base64_encode(file_get_contents($filePath))
