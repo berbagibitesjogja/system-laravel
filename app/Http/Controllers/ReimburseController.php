@@ -40,7 +40,7 @@ class ReimburseController extends Controller
         $filePath = $file->getRealPath();
 
         try {
-            $result = Gemini::generativeModel("models/gemini-2.0-flash")
+            $result = Gemini::generativeModel("models/gemini-embedding-2")
                 ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
                     mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
                     data: base64_encode(file_get_contents($filePath))
