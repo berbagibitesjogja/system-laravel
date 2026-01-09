@@ -63,9 +63,9 @@ class ReportController extends Controller
     }
 
 
-    public function createMonthlyReport($sponsor, $bulan, $year = null)
+    public static function createMonthlyReport($sponsor, $bulan, $year = null)
     {
-        return $this->generateMonthlyReportData($sponsor, $bulan, $year);
+        return static::generateMonthlyReportData($sponsor, $bulan, $year);
     }
 
 

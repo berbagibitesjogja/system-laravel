@@ -8,7 +8,6 @@ use App\Models\AppConfiguration;
 use App\Models\Donation\Donation;
 use App\Models\Donation\Sponsor;
 use App\Models\Heroes\Hero;
-use App\Models\Volunteer\Availability;
 use App\Models\Volunteer\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -18,51 +17,6 @@ use Illuminate\Support\Facades\Storage;
 trait BotVolunteerTrait
 {
     use SendWhatsapp;
-    protected function getAvailableVolunteer($sender, $message)
-    {
-        $days = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-
-        $time = str_replace('@BOT avail ', '', $message);
-        $timeRange = strpos($time, '-') !== false ? explode('-', $time) : [$time];
-
-        $day = substr($timeRange[0], 0, 1);
-        foreach ($timeRange as $key => $avail) {
-            if (substr($avail, 0, 1) !== $day) {
-                return $this->send($sender, 'Tidak boleh beda hari', 'SECOND');
-            }
-            $timeRange[$key] = substr($avail, 1);
-        }
-
-        if ($timeRange[0] > end($timeRange)) {
-            return $this->send($sender, 'Waktu harus berurutan', 'SECOND');
-        }
-
-        $take = [];
-        for ($i = $timeRange[0]; $i <= end($timeRange); $i += 5) {
-            $take[] = $day . $i;
-        }
-
-        $availUsers = Availability::whereIn('code', $take)
-            ->select('user_id')
-            ->groupBy('user_id')
-            ->havingRaw("COUNT(user_id) = ?", [count($take)])
-            ->pluck('user_id');
-
-        $users = User::whereIn('id', $availUsers)->get();
-
-        $startHour = substr($timeRange[0], 0, -1);
-        $startMinute = substr($timeRange[0], -1) == 0 ? "00" : "30";
-        $endHour = substr(end($timeRange), 0, -1);
-        $endMinute = substr(end($timeRange), -1) == 0 ? "00" : "30";
-
-        $message = "*[Available Volunteer]*\n\n{$days[$day]} $startHour.$startMinute - $endHour.$endMinute\nJumlah : " . count($users) . " Volunteer\n\n";
-
-        foreach ($users as $user) {
-            $message .= "{$user->name}\n{$user->phone}\n";
-        }
-
-        $this->send($sender, $message, 'SECOND');
-    }
 
     protected function giveDocumentation($message)
     {

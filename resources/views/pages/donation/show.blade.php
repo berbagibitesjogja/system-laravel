@@ -25,6 +25,23 @@
                 📸 Dokumentasi
             </x-btn-link>
         @endif
+
+        <x-btn @click="$dispatch('open-share')" variant="tosca" class="hidden md:flex">
+            🤳 Bagikan Impact
+        </x-btn>
+
+        <x-share-card 
+            title="Impact Report"
+            subtitle="Aksi Food Rescue"
+            :name="$donation->sponsor->name"
+            :avatar="$donation->sponsor->logo ?? null"
+            :stats="[
+                ['label' => 'Heroes', 'value' => $donation->quota - $donation->remain, 'unit' => 'Orang'],
+                ['label' => 'Surplus Food', 'value' => round($foods->sum('weight') / 1000), 'unit' => 'Kg'],
+                ['label' => 'Jenis Makanan', 'value' => $foods->count()],
+                ['label' => 'Tanggal', 'value' => \Carbon\Carbon::parse($donation->take)->format('d/m/Y')],
+            ]"
+        />
     </div>
 
     <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6 mb-8">

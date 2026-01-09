@@ -32,6 +32,7 @@ Route::redirect('home', '');
 
 Route::controller(VolunteerController::class)->group(function () {
     Route::get('', 'home')->name('volunteer.home');
+    Route::get('hall-of-fame', 'hallOfFame')->name('hall-of-fame');
     Route::get('auth/google/callback', 'authenticate');
     Route::get('login', 'login')->name('login');
     Route::get('logout', 'logout')->name('logout')->middleware('auth');
@@ -54,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('volunteer/precence', PrecenceController::class);
     Route::resource('volunteer', VolunteerController::class);
     Route::resource('food', FoodController::class)->except(['show', 'create']);
+    Route::get('gallery', [DonationController::class, 'gallery'])->name('gallery');
     Route::resource('sponsor', SponsorController::class);
     Route::resource('beneficiary', BeneficiaryController::class);
     Route::resource('donation', DonationController::class);

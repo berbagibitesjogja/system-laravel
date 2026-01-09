@@ -165,4 +165,27 @@ class DonationController extends Controller
         }
         return redirect()->route('donation.index')->with('error', 'Gagal menghapus donasi');
     }
+
+    public function gallery()
+    {
+        $donations = Donation::whereNotNull('media')
+            ->where('media', '!=', '')
+            ->where('media', 'LIKE', '%drive.google.com%')
+            ->with(['sponsor', 'foods'])
+            ->latest()
+            ->paginate(12);
+
+        return view('pages.donation.gallery', compact('donations'));
+    }
+
+    public static function extractFolderId($url)
+    {
+        if (preg_match('/folders\/([a-zA-Z0-9-_]+)/', $url, $match)) {
+            return $match[1];
+        }
+        if (preg_match('/id=([a-zA-Z0-9-_]+)/', $url, $match)) {
+            return $match[1];
+        }
+        return $url;
+    }
 }

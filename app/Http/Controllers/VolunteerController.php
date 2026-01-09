@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVolunteerRequest;
 use App\Models\Donation\Donation;
 use App\Models\Donation\Food;
+use App\Models\Donation\Sponsor;
 use App\Models\Heroes\Hero;
 use App\Models\Heroes\University;
 use App\Models\Volunteer\Availability;
@@ -46,6 +47,24 @@ class VolunteerController extends Controller
         return view('pages.volunteer.home', compact('user', 'donations', 'foods', 'heroes', 'lastData', 'precence', 'activities'));
     }
 
+    public function hallOfFame()
+    {
+        $topVolunteers = User::where('role', 'member')
+            ->withCount('attendances')
+            ->having('attendances_count', '>', 0)
+            ->orderBy('attendances_count', 'desc')
+            ->limit(10)
+            ->get();
+
+        $topSponsors = Sponsor::withCount('donation')
+            ->having('donation_count', '>', 0)
+            ->orderBy('donation_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('pages.volunteer.hall-of-fame', compact('topVolunteers', 'topSponsors'));
+    }
+
     public function index()
     {
         if (Auth::user()->role == 'member') {
@@ -82,8 +101,19 @@ class VolunteerController extends Controller
     public function show(User $volunteer)
     {
         $divisions = Division::all();
+        $activities = \Spatie\Activitylog\Models\Activity::causedBy($volunteer)
+            ->latest()
+            ->limit(5)
+            ->get();
 
-        return view('pages.volunteer.show', compact('volunteer', 'divisions'));
+        // Calculate Rank
+        $myAttendance = $volunteer->attendances()->count();
+        $rank = User::where('role', 'member')
+            ->withCount('attendances')
+            ->having('attendances_count', '>', $myAttendance)
+            ->count() + 1;
+
+        return view('pages.volunteer.show', compact('volunteer', 'divisions', 'activities', 'rank'));
     }
 
     public function update(Request $request, User $volunteer)

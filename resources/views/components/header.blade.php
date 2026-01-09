@@ -50,6 +50,10 @@
                         @auth
                             <a href="{{ route('volunteer.home') }}"
                                 class="block px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 rounded-lg">Home</a>
+                            <a href="{{ route('hall-of-fame') }}"
+                                class="block px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 rounded-lg">Hall of Fame</a>
+                            <a href="{{ route('gallery') }}"
+                                class="block px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 rounded-lg">Gallery</a>
                         @else
                             <a href="https://berbagibitesjogja.com/"
                                 class="block px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 rounded-lg">Home</a>
@@ -237,19 +241,35 @@
 
             <li class="relative">
                 @auth
-                    <a class="@if (str_contains(request()->route()->getName(), 'volunteer')) border-b-2 border-tosca-500 text-tosca
+                    <a class="@if (request()->routeIs('volunteer.home')) border-b-2 border-tosca-500 text-tosca
                     @else
                     hover-underline text-gray-400 hover:text-tosca @endif
                     py-2"
-                        href="{{ route('volunteer.home') }}" class="text-gray-400 hover:text-tosca py-2">Home</a>
+                        href="{{ route('volunteer.home') }}">Home</a>
                 @else
                     <a class="@if (str_contains(request()->route()->getName(), 'volunteer')) border-b-2 border-tosca-500 text-tosca
                     @else
                     hover-underline text-gray-400 hover:text-tosca @endif
                     py-2"
-                        href="https://berbagibitesjogja.com/" class="text-gray-400 hover:text-tosca py-2">Home</a>
+                        href="https://berbagibitesjogja.com/">Home</a>
                 @endauth
             </li>
+            @auth
+                <li class="relative">
+                    <a class="@if (request()->routeIs('hall-of-fame')) border-b-2 border-tosca-500 text-tosca
+                    @else
+                    hover-underline text-gray-400 hover:text-tosca @endif
+                    py-2"
+                        href="{{ route('hall-of-fame') }}">Hall of Fame</a>
+                </li>
+                <li class="relative">
+                    <a class="@if (request()->routeIs('gallery')) border-b-2 border-tosca-500 text-tosca
+                    @else
+                    hover-underline text-gray-400 hover:text-tosca @endif
+                    py-2"
+                        href="{{ route('gallery') }}">Gallery</a>
+                </li>
+            @endauth
             @guest
 
                 <li class="relative">
