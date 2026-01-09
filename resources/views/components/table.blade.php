@@ -1,7 +1,7 @@
 <div {{ $attributes->merge(['class' => 'w-full overflow-hidden rounded-xl border border-navy-100 shadow-md']) }}>
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-navy-700 min-w-max">
-            <thead class="text-xs text-navy-600 uppercase bg-gradient-to-r from-navy-50 to-tosca-50 font-semibold border-b border-navy-100">
+            <thead class="text-xs text-navy-600 uppercase bg-gradient-to-r from-navy-50 to-tosca-50 font-semibold border-b border-navy-100 sticky top-0 z-20 shadow-sm backdrop-blur-md">
                 <tr>
                     {{ $head }}
                 </tr>

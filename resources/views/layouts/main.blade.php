@@ -39,10 +39,10 @@
     </main>
     @include('components.footer')
     @session('success')
-        @include('components.toast_success')
+        <x-toast type="success" :message="session('success')" />
     @endsession
     @session('error')
-        @include('components.toast_error')
+        <x-toast type="error" :message="session('error')" />
     @endsession
 
 </body>

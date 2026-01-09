@@ -29,6 +29,7 @@
                 <input 
                     type="text" 
                     x-model="search" 
+                    x-init="$el.focus()"
                     placeholder="Cari donasi (nama/tanggal)..." 
                     class="w-full pl-10 pr-4 py-2 bg-white border border-navy-100 rounded-xl text-sm focus:ring-2 focus:ring-tosca-300 focus:border-tosca-500 transition-all outline-none"
                 >
@@ -40,6 +41,12 @@
                 </button>
             </div>
         </div>
+
+        @auth
+            @if (in_array(auth()->user()->role, ['core', 'super']) || auth()->user()->division->name == 'Food')
+                <x-fab onClick="window.location.href='{{ route('donation.create') }}'" label="Tambah Donasi" />
+            @endif
+        @endauth
         <x-table>
             <x-slot:head>
                 <x-th class="hidden sm:table-cell">Tanggal</x-th>

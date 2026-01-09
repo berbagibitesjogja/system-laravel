@@ -38,7 +38,12 @@ class VolunteerController extends Controller
         $precence = Precence::where('status', 'active')->count();
         $foods = Food::whereIn('donation_id', $donations->pluck('id'))->where('expired', '0')->get();
         $heroes = Hero::all();
-        return view('pages.volunteer.home', compact('user', 'donations', 'foods', 'heroes', 'lastData', 'precence'));
+        $activities = \Spatie\Activitylog\Models\Activity::with(['causer', 'subject'])
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('pages.volunteer.home', compact('user', 'donations', 'foods', 'heroes', 'lastData', 'precence', 'activities'));
     }
 
     public function index()

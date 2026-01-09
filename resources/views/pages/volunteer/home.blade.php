@@ -72,19 +72,83 @@
         </div>
     </div>
 
-    <div class="mt-12 bg-white rounded-xl border border-navy-100 shadow-md p-6">
-        <h1 class="font-bold text-navy-900 text-xl mb-6">Statistik Heroes {{ count($lastData) }} Bulan Terakhir</h1>
-        <div class="h-64">
-            <canvas id="heroStatistics"></canvas>
+    <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {{-- Charts Section --}}
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6">
+                <h1 class="font-bold text-navy-900 text-xl mb-6 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-tosca-500 rounded-full"></span>
+                    Statistik Heroes
+                </h1>
+                <div class="h-64">
+                    <canvas id="heroStatistics"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6">
+                <h1 class="font-bold text-navy-900 text-xl mb-6 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-navy-500 rounded-full"></span>
+                    Statistik Makanan
+                </h1>
+                <div class="h-64">
+                    <canvas id="foodStatistics"></canvas>
+                </div>
+            </div>
+        </div>
+
+        {{-- Activity Timeline --}}
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6 h-full flex flex-col">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-bold text-navy-900 text-xl flex items-center gap-2">
+                        <span class="p-1.5 bg-navy-100 text-navy-600 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
+                        Aktivitas Terbaru
+                    </h2>
+                    @if(auth()->user()->role == 'super')
+                        <a href="{{ route('logs.activity') }}" class="text-xs font-bold text-tosca-600 hover:text-tosca-700 uppercase tracking-wider">Lihat Semua</a>
+                    @endif
+                </div>
+
+                <div class="flex-1 space-y-6 relative">
+                    {{-- Vertical Line --}}
+                    <div class="absolute left-4 top-2 bottom-2 w-0.5 bg-navy-50"></div>
+
+                    @forelse($activities as $activity)
+                        <div class="relative pl-10">
+                            <div class="absolute left-2.5 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-white 
+                                {{ $activity->event === 'created' ? 'bg-lime-500 shadow-[0_0_0_4px_rgba(132,204,22,0.1)]' : 
+                                   ($activity->event === 'deleted' ? 'bg-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.1)]' : 'bg-navy-500 shadow-[0_0_0_4px_rgba(33,86,138,0.1)]') }}">
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-navy-900 leading-tight">
+                                    {{ $activity->causer ? $activity->causer->name : 'System' }}
+                                    <span class="font-normal text-navy-400">
+                                        {{ $activity->description }}
+                                        @if($activity->subject_type)
+                                            {{ class_basename($activity->subject_type) }}
+                                        @endif
+                                    </span>
+                                </p>
+                                <p class="text-[10px] font-bold text-navy-300 uppercase mt-1">
+                                    {{ $activity->created_at->diffForHumans() }}
+                                </p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="py-12 text-center">
+                            <p class="text-sm text-navy-400">Belum ada aktivitas tercatat.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div class="mt-8 bg-white rounded-xl border border-navy-100 shadow-md p-6">
-        <h1 class="font-bold text-navy-900 text-xl mb-6">Statistik Makanan {{ count($lastData) }} Bulan Terakhir</h1>
-        <div class="h-64">
-            <canvas id="foodStatistics"></canvas>
-        </div>
-    </div>
+
+    @if(auth()->user()->role != 'member')
+        <x-fab onClick="window.location.href='{{ route('donation.create') }}'" label="Tambah Donasi" />
+    @endif
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

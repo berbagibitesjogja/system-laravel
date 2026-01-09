@@ -17,6 +17,7 @@
                 <input 
                     type="text" 
                     x-model="search" 
+                    x-init="$el.focus()"
                     placeholder="Cari volunteer..." 
                     class="w-full pl-10 pr-4 py-2 bg-white border border-navy-100 rounded-xl text-sm focus:ring-2 focus:ring-tosca-300 focus:border-tosca-500 transition-all outline-none"
                 >
@@ -28,6 +29,10 @@
                 </button>
             </div>
         </div>
+
+        @if (auth()->user()->role == 'super')
+            <x-fab onClick="window.location.href='{{ route('volunteer.create') }}'" label="Tambah Volunteer" />
+        @endif
         <x-table>
             <x-slot:head>
                 <x-th>Nama</x-th>
