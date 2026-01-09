@@ -204,7 +204,7 @@ class VolunteerController extends Controller
                     $this->send($volunteer->phone, $message);
                     $this->send("120363330280278639@g.us", $messageS);
                 });
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
             $entry = session('entry');
             $jobId = session('job');
@@ -214,7 +214,7 @@ class VolunteerController extends Controller
             $apply = FormJob::whereId($entry)->first();
 
             if (!$apply) {
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
 
             $data = collect($apply['data']);
@@ -222,14 +222,14 @@ class VolunteerController extends Controller
             $jobItemIndex = $jobs->search(fn($j) => $j['id'] == $jobId);
 
             if ($jobItemIndex === false) {
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
 
             $jobItem = $jobs[$jobItemIndex];
 
             // Check division restriction
             if (!empty($jobItem['division']) && $jobItem['division'] != $volunteer->division->name) {
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
 
             // Work with persons
@@ -271,7 +271,7 @@ class VolunteerController extends Controller
                     $this->send($volunteer->phone, $messageV);
                 });
             }
-            return redirect()->away('https://war.berbagibitesjogja.com');
+            return redirect()->away('https://berbagibitesjogja.com/war');
         }
         if (session('unjob')) {
             $entry = session('entry');
@@ -282,7 +282,7 @@ class VolunteerController extends Controller
             $apply = FormJob::whereId($entry)->first();
 
             if (!$apply) {
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
 
             $data = collect($apply['data']);
@@ -290,7 +290,7 @@ class VolunteerController extends Controller
             $jobItemIndex = $jobs->search(fn($j) => $j['id'] == $jobId);
 
             if ($jobItemIndex === false) {
-                return redirect()->away('https://war.berbagibitesjogja.com');
+                return redirect()->away('https://berbagibitesjogja.com/war');
             }
 
             $jobItem = $jobs[$jobItemIndex];
@@ -345,7 +345,7 @@ class VolunteerController extends Controller
                 $this->send('120363350581821641@g.us', $message);
                 $this->send($volunteer->phone, $messageV);
             });
-            return redirect()->away('https://war.berbagibitesjogja.com');
+            return redirect()->away('https://berbagibitesjogja.com/war');
         }
         Auth::login($volunteer);
         activity()

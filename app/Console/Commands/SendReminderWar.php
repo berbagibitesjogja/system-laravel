@@ -55,7 +55,7 @@ class SendReminderWar extends Command
             $output .= "\n";
         }
         
-        $output .= "👉 Apply tugas dapat dilakukan melalui link war.berbagibitesjogja.com pada waktu yang telah ditentukan.";
+        $output .= "👉 Apply tugas dapat dilakukan melalui link berbagibitesjogja.com/war pada waktu yang telah ditentukan.";
         
         $this->send('120363350581821641@g.us', $output);
 

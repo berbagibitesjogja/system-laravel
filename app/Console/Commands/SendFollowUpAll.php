@@ -44,7 +44,7 @@ class SendFollowUpAll extends Command
 
             $output .= "\n⚠️ Bagi teman-teman volunteer yang ingin ikut berkontribusi di kegiatan ini, "
                 . "silakan isi jadwal tugas melalui link berikut ya:\n"
-                . "👉 war.berbagibitesjogja.com\n\n"
+                . "👉 berbagibitesjogja.com/war\n\n"
                 . "Terima kasih atas semangat dan partisipasinya 🌱";
 
             $this->send('120363350581821641@g.us', $output);
