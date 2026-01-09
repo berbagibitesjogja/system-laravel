@@ -96,7 +96,7 @@ trait BotVolunteerTrait
     }
     protected function sendToPemkot($payload)
     {
-        return Http::post("https://pemkot.berbagibitesjogja.com/from-fonnte", $payload);
+        return Http::post("https://berbagibitesjogja.com/pemkot/from-fonnte", $payload);
     }
     protected function getRecap()
     {
