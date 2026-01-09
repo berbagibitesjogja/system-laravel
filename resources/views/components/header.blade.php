@@ -284,7 +284,7 @@
                     hover-underline text-gray-400 hover:text-tosca group-hover:text-tosca @endif
                     py-2 cursor-pointer">Action</a>
                     <div
-                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 invisible pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                             <li>
                                 <a href="{{ route('donation.index') }}"
@@ -308,7 +308,7 @@
                     hover-underline text-gray-400 hover:text-tosca group-hover:text-tosca @endif
                     py-2 cursor-pointer">Beneficiaries</a>
                     <div
-                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 invisible pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                             <li>
                                 <a href="{{ route('beneficiary.index', ['variant' => 'student']) }}"
@@ -336,7 +336,7 @@
                     hover-underline text-gray-400 hover:text-tosca group-hover:text-tosca @endif
                     py-2 cursor-pointer">Partner</a>
                     <div
-                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 invisible pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                             <li>
                                 <a href="{{ route('sponsor.index', ['variant' => 'company']) }}"
@@ -362,7 +362,7 @@
                     hover-underline text-gray-400 hover:text-tosca group-hover:text-tosca @endif
                     py-2 cursor-pointer">Logs</a>
                         <div
-                            class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                            class="absolute transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 invisible pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto z-10 bg-white divide-y mt-2 divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
                                     <a href="{{ route('logs.system') }}"

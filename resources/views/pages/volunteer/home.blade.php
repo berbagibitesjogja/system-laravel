@@ -15,36 +15,35 @@
     </div>
 
     <div class="mt-8">
-        <h2 class="text-lg font-bold text-navy-900 mb-4">Aksi Cepat</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <x-action-card href="{{ route('reimburse.create') }}" color="orange">
+        <h2 class="text-lg font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <span class="p-1.5 bg-orange-100 text-orange-600 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </span>
+            Aksi Cepat
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <x-action-card href="{{ route('reimburse.create') }}" color="orange" icon="{{ asset('assets/donate.svg') }}">
                 Ajukan Reimburse
             </x-action-card>
             
             @if ($user->role=='super' || $user->division->name=='Friend')
-                <x-action-card href="{{ route('reimburse.index') }}" color="tosca">
-                    Reimburse
+                <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
+                    Data Reimburse
                 </x-action-card>
-                <x-action-card href="{{ route('precence.index') }}" color="navy">
-                    Presensi
+                <x-action-card href="{{ route('precence.index') }}" color="navy" icon="{{ asset('assets/people.svg') }}">
+                    Presensi Volunteer
                 </x-action-card>
             @endif
             
             @if ($user->role!='member')
-                <x-action-card href="{{ route('volunteer.index') }}" color="lime">
-                    Volunteer
+                <x-action-card href="{{ route('volunteer.index') }}" color="lime" icon="{{ asset('assets/hero.svg') }}">
+                    Manajemen Volunteer
                 </x-action-card>
             @endif
             
             @if ($precence==1)
-                <x-action-card href="{{ route('precence.qr', 'scan') }}" color="tosca">
-                    Scan QR
-                </x-action-card>
-                <x-action-card href="{{ route('precence.qr', 'view') }}" color="navy">
-                    Lihat QR Code
-                </x-action-card>
-                <x-action-card href="{{ route('precence.qr', 'download') }}" color="navy">
-                    Download QR Code
+                <x-action-card href="{{ route('precence.qr', 'scan') }}" color="tosca" icon="{{ asset('assets/people.svg') }}">
+                    Scan QR Presensi
                 </x-action-card>
             @endif
         </div>

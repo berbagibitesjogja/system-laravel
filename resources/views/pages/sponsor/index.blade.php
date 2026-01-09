@@ -1,18 +1,30 @@
 @extends('layouts.main')
 @section('container')
-    <div class="flex flex-wrap gap-3 items-center mb-6">
-        @if (auth()->user()->role != 'member')
-            <x-btn-link href="{{ route('sponsor.create') }}" variant="success">
-                + Tambah Donatur
-            </x-btn-link>
-        @endif
-    </div>
-    
-    <div class="mb-6">
-        {{ $sponsors->links() }}
-    </div>
+    <div x-data="{ search: '', showDeleteModal: false, deleteUrl: '' }">
+        <div class="flex flex-wrap gap-4 items-center justify-between mb-8">
+            <div class="flex flex-wrap gap-3 items-center">
+                @if (auth()->user()->role != 'member')
+                    <x-btn-link href="{{ route('sponsor.create') }}" variant="success">
+                        + Tambah Donatur
+                    </x-btn-link>
+                @endif
+            </div>
 
-    <div x-data="{ showDeleteModal: false, deleteUrl: '' }">
+            <div class="relative w-full md:w-72">
+                <input 
+                    type="text" 
+                    x-model="search" 
+                    placeholder="Cari donatur..." 
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-navy-100 rounded-xl text-sm focus:ring-2 focus:ring-tosca-300 focus:border-tosca-500 transition-all outline-none"
+                >
+                <svg class="absolute left-3 top-2.5 w-4 h-4 text-navy-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <button x-show="search" @click="search = ''" class="absolute right-3 top-2.5 text-navy-300 hover:text-navy-500">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                </button>
+            </div>
+        </div>
         <x-table>
             <x-slot:head>
                 <x-th>Nama Donatur</x-th>
@@ -25,7 +37,7 @@
             </x-slot:head>
             <x-slot:body>
                 @forelse ($sponsors as $item)
-                    <x-tr>
+                    <x-tr x-show="search === '' || $el.innerText.toLowerCase().includes(search.toLowerCase())">
                         <x-td>
                             <div>
                                 <p class="font-semibold text-navy-900">{{ $item->name }}</p>
