@@ -27,6 +27,7 @@
     <meta name="twitter:image" content="https://berbagibitesjogja.com/shareable-card-preview.jpg">
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <title>{{ $active ?? '' ? "$active |" : '' }}Berbagi Bites Jogja</title>
 
 </head>
