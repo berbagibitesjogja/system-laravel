@@ -27,7 +27,7 @@
             <x-th>Donasi</x-th>
         </x-slot:head>
         <x-slot:body>
-            @foreach ($heroes as $item)
+            @forelse ($heroes as $item)
                 @php
                     $donation = $item->donation;
                 @endphp
@@ -52,7 +52,13 @@
                         </a>
                     </x-td>
                 </x-tr>
-            @endforeach
+            @empty
+                <x-tr>
+                    <x-td colspan="3" class="py-12 text-center text-navy-400">
+                        Belum ada Heroes terdaftar di fakultas ini.
+                    </x-td>
+                </x-tr>
+            @endforelse
         </x-slot:body>
     </x-table>
 @endsection
