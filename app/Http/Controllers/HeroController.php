@@ -72,10 +72,6 @@ class HeroController extends Controller implements HasMiddleware
 
     public function contributor(Request $request)
     {
-        // Could use StoreContributorRequest here, but user didn't request that specifically in step 39,
-        // but implied in plan. I'll stick to inline or simple validation if allowed, but plan said StoreContributorRequest.
-        // Wait, I forgot to create StoreContributorRequest in previous steps. 
-        // I'll keep logic here simple as User instructions are "Refactor".
         try {
             $donation = Donation::find($request['donation_id']);
             if ($donation->remain < $request['quantity']) {
@@ -91,16 +87,6 @@ class HeroController extends Controller implements HasMiddleware
             // Remain update handled by Observer
 
             $donation->save(); 
-            // Save might be redundant if Observer updates it, but Observer does $hero->donation->decrement.
-            // $hero->donation refers to relation.
-            // Here $donation instance is loaded. Observer updates DB directly or instance?
-            // Observer usually updates via Model query or instance.
-            // If Observer updates DB, this '$donation' instance is stale. 
-            // But we don't save $donation here with changed fields manually anymore (we removed decrement).
-            // So $donation->save() here effectively does nothing if we didn't change attributes.
-            // EXCEPT: Observer runs AFTER create.
-            // So logic is: Create Hero -> Observer runs -> Donation decremented.
-            // We don't need to save donation here.
             
             return back()->with('success', 'Berhasil menambahkan kontributor');
         } catch (\Throwable $th) {
@@ -147,42 +133,8 @@ class HeroController extends Controller implements HasMiddleware
         return back()->with('success', 'Hero telah datang');
     }
 
-    public function restore(Backup $backup)
-    {
-        $donation = $backup->donation;
-        if ($donation->remain > 0) {
-            Hero::create([
-                'name' => $backup->name,
-                'phone' => $backup->phone,
-                'faculty' => $backup->faculty, // Original code had 'faculty' not 'faculty_id' here? 
-                // Let's check original restore method:
-                // 'faculty' => $backup->faculty, 
-                // But Hero model usually uses faculty_id? 
-                // Code said: 'faculty' => $backup->faculty
-                // If Hero model has 'faculty' fillable, okay.
-                'donation' => $backup->donation,
-                'code' => $backup->code,
-                'status' => 'belum',
-            ]);
-            // Remain update handled by Observer.
-            $backup->delete();
-        }
-
-        return back();
-    }
-
-    public function trash(Backup $backup)
-    {
-        $backup->delete();
-
-        return back();
-    }
-
     public function destroy(Hero $hero)
     {
-        // Observer 'deleted' will increment donation remain.
-        // We only need to handle Backup creation.
-        
         Backup::create([
             'name' => $hero->name,
             'phone' => $hero->phone,

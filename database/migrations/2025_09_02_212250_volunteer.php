@@ -46,15 +46,6 @@ return new class extends Migration
             $table->unique(['precence_id', 'user_id']);
             $table->timestamps();
         });
-        Schema::create('availabilities', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->integer('day');
-            $table->integer('hour');
-            $table->integer('minute');
-            $table->string('code');
-            $table->timestamps();
-        });
         Schema::create('reimburses', function (Blueprint $table) {
             $table->id();
             $table->string('method');
@@ -75,7 +66,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('precences');
         Schema::dropIfExists('attendances');
-        Schema::dropIfExists('availabilities');
         Schema::dropIfExists('reimburses');
     }
 };

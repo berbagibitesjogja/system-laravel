@@ -30,6 +30,5 @@ class AppServiceProvider extends ServiceProvider
         });
 
         \App\Models\Heroes\Hero::observe(\App\Observers\HeroObserver::class);
-        \App\Models\Volunteer\User::observe(\App\Observers\UserObserver::class);
     }
 }

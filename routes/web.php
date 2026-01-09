@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\BotController;
-use App\Http\Controllers\ContributorController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\HeroController;
@@ -22,7 +20,6 @@ Route::get('apply/{entry}/{job}', [VolunteerController::class, 'applyJob']);
 Route::get('un-apply/{entry}/{job}', [VolunteerController::class, 'unapplyJob']);
 Route::get('monthly-report/{code}', [ReportController::class, 'downloadMonthly'])->name('monthlyReport');
 Route::match(['get', 'post'], 'from-fonnte', [BotController::class, 'fromFonnte'])->withoutMiddleware(VerifyCsrfToken::class);
-Route::view('print', 'print');
 Route::fallback(function () {
     return view('pages.coming');
 });
@@ -48,33 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::controller(HeroController::class)->name('hero.')->group(function () {
         Route::post('hero/contributor', 'contributor')->name('contributor');
         Route::get('hero/faculty/{faculty}', 'faculty')->name('faculty');
-        Route::get('hero/backups', 'backups')->name('backups');
-        Route::get('hero/restore/{backup}', 'restore')->name('restore');
-        Route::delete('hero/trash/{backup}', 'trash')->name('trash');
-    });
-
-    Route::controller(ReportController::class)->name('report.')->group(function () {
-        Route::get('report', 'index')->name('index');
-        Route::post('report/download', 'download')->name('download');
-        Route::get('report/clean', 'clean')->name('clean');
-    });
-
-    Route::controller(ContributorController::class)->group(function () {
-        Route::get('kontribusi/food-surplus', 'foodCreate')->name('payment.foodCreate');
-        Route::post('kontribusi/food-surplus', 'foodStore')->name('payment.foodStore');
-        Route::get('contributor/foods', 'food')->name('contributor.food');
-        Route::delete('contributor/foods/{booking}', 'foodCancel')->name('contributor.food.destroy');
-        Route::put('contributor/foods/{booking}', 'foodDone')->name('contributor.food.update');
     });
     Route::controller(LogController::class)->name('logs.')->group(function () {
         Route::get('logs/system')->name('system');
         Route::get('logs/activity', 'activityLogs')->name('activity');
     });
-    Route::controller(AvailabilityController::class)->name('availability.')->group(function () {
-        Route::get('availability', 'dashboard')->name('dashboard');
-        Route::get('availability/{time}', 'time')->name('time');
-    });
-    Route::get('availability/{codes}/{status}', [AvailabilityController::class, 'update']);
     Route::post('attendance/precence/{precence}', [PrecenceController::class, 'manual'])->name('attendance.manual');
     Route::resource('volunteer/precence', PrecenceController::class);
     Route::resource('volunteer', VolunteerController::class);

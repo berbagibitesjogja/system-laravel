@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Volunteer\Division;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
