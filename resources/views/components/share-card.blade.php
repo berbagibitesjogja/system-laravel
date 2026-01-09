@@ -7,7 +7,34 @@
     'footer' => 'berbagibitesjogja.com'
 ])
 
-<div x-data="{ show: false }" @open-share.window="show = true" class="relative z-[100]" x-show="show" x-cloak>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<div x-data="{ 
+    show: false, 
+    downloading: false,
+    async downloadCard() {
+        this.downloading = true;
+        const card = document.getElementById('impact-card');
+        try {
+            const canvas = await html2canvas(card, {
+                scale: 3, // Higher resolution for IG
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
+            const image = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = 'BBJ-Impact-Report.png';
+            link.click();
+        } catch (e) {
+            console.error('Download error:', e);
+            alert('Gagal mendownload gambar. Silakan screenshot manual.');
+        } finally {
+            this.downloading = false;
+        }
+    }
+}" @open-share.window="show = true" class="relative z-[100]" x-show="show" x-cloak>
     <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="fixed inset-0 bg-navy-900/90 backdrop-blur-sm transition-opacity"></div>
 
     <div class="fixed inset-0 overflow-y-auto">
@@ -17,71 +44,98 @@
                 @click.away="show = false">
                 
                 {{-- The Card Content (Designed like a Poster) --}}
-                <div id="impact-card" class="bg-white overflow-hidden">
+                <div id="impact-card" class="bg-white overflow-hidden" style="width: 450px; margin: 0 auto;">
                     {{-- Header with Pattern --}}
-                    <div class="bg-navy-900 h-48 relative flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+                    <div class="bg-navy-900 h-64 relative flex flex-col items-center justify-center text-center px-6 overflow-hidden">
                         {{-- Abstract Background Svg --}}
                         <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <path d="M0 100 L100 100 L100 0 Z" fill="white" />
                         </svg>
                         
                         <div class="relative z-10">
-                            <div class="w-12 h-12 bg-tosca-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-lg shadow-tosca-500/50">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            <div class="w-16 h-16 bg-tosca-500 rounded-3xl flex items-center justify-center mb-4 mx-auto shadow-xl shadow-tosca-500/50">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                             </div>
-                            <h4 class="text-xs font-black text-tosca-400 uppercase tracking-[0.3em]">{{ $subtitle }}</h4>
-                            <h2 class="text-2xl font-black text-white mt-1">{{ $title }}</h2>
+                            <h4 class="text-xs font-black text-tosca-400 uppercase tracking-[0.4em]">{{ $subtitle }}</h4>
+                            <h2 class="text-3xl font-black text-white mt-2 leading-tight">{{ $title }}</h2>
                         </div>
                     </div>
 
-                    <div class="relative px-8 pt-16 pb-8 text-center bg-white">
-                        <div class="absolute -top-12 left-1/2 -translate-x-1/2">
-                            <div class="w-24 h-24 rounded-[2rem] bg-white p-1.5 shadow-xl rotate-3">
-                                <div class="w-full h-full rounded-[1.7rem] overflow-hidden bg-navy-50 -rotate-3 border-2 border-navy-100 flex items-center justify-center">
+                    <div class="relative px-10 pt-20 pb-12 text-center bg-white">
+                        <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+                            <div class="w-32 h-32 rounded-[2.5rem] bg-white p-2 shadow-2xl rotate-3">
+                                <div class="w-full h-full rounded-[2.2rem] overflow-hidden bg-navy-50 -rotate-3 border-2 border-navy-100 flex items-center justify-center">
                                     @if($avatar)
-                                        <img src="{{ $avatar }}" alt="{{ $name }}" class="object-cover">
+                                        <img src="{{ $avatar }}" alt="{{ $name }}" class="w-full h-full object-cover">
                                     @else
-                                        <span class="text-3xl font-black text-navy-200 uppercase">{{ substr($name, 0, 1) }}</span>
+                                        <span class="text-4xl font-black text-navy-200 uppercase">{{ substr($name, 0, 1) }}</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
                         
-                        <h3 class="text-xl font-black text-navy-900 lowercase italic tracking-tight mb-8">
-                            <span class="text-tosca-600 block text-xs not-italic font-black uppercase tracking-widest mb-1 opacity-50">Impact Generated by</span>
+                        <h3 class="text-2xl font-black text-navy-900 lowercase italic tracking-tight mb-10">
+                            <span class="text-tosca-600 block text-[10px] not-italic font-black uppercase tracking-[0.3em] mb-2 opacity-50">Impact Generated by</span>
                             "{{ $name }}"
                         </h3>
 
                         {{-- Stats Grid --}}
-                        <div class="grid grid-cols-2 gap-4 mb-10">
+                        <div class="grid grid-cols-2 gap-6 mb-12">
                             @foreach($stats as $stat)
-                                <div class="p-4 rounded-3xl bg-navy-50/50 border border-navy-50 flex flex-col items-center">
+                                <div class="p-6 rounded-[2rem] bg-navy-50/50 border border-navy-50 flex flex-col items-center">
                                     <span class="text-[10px] font-black text-navy-400 uppercase tracking-widest mb-1">{{ $stat['label'] }}</span>
-                                    <span class="text-2xl font-black text-navy-900 leading-tight">
+                                    <span class="text-3xl font-black text-navy-900 leading-tight">
                                         {{ $stat['value'] }}
-                                        <span class="text-[10px] text-tosca-600">{{ $stat['unit'] ?? '' }}</span>
+                                        <span class="text-xs text-tosca-600">{{ $stat['unit'] ?? '' }}</span>
                                     </span>
                                 </div>
                             @endforeach
                         </div>
 
                         {{-- Footer / QR Placeholder Area --}}
-                        <div class="pt-8 border-t border-navy-50 flex items-center justify-between opacity-50">
-                            <p class="text-[10px] font-black text-navy-400 uppercase tracking-widest">{{ $footer }}</p>
-                            <div class="w-10 h-10 bg-navy-900 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v4H3V3zm14 0h4v4h-4V3zM3 17h4v4H3v-4zm11 0h1v1h-1v-1zm2 2h1v1h-1v-1zm-2 2h1v1h-1v-1zm5-2h1v1h-1v-1zm0 2h1v1h-1v-1zm-2-2h1v1h-1v-1zm0 2h1v1h-1v-1zM3 3h4v4H3V3zm14 0h4v4h-4V3zM3 17h4v4H3v-4zm0 4v-4H3v4h4zM17 3v4h4V3h-4zM7 3v4H3V3h4zm14 4h-4V3h4v4zm-4 10h1v1h-1v-1zm2 2h1v1h-1v-1zm-2 2h1v1h-1v-1zm5-2h1v1h-1v-1zm0 2h1v1h-1v-1zm-2-2h1v1h-1v-1zm0 2h1v1h-1v-1z"/></svg>
+                        <div class="pt-10 border-t border-navy-50 flex items-center justify-between">
+                            <div class="text-left">
+                                <p class="text-[10px] font-black text-navy-400 uppercase tracking-[0.2em] mb-1">Join the mission</p>
+                                <p class="text-xs font-black text-navy-900 uppercase tracking-widest">{{ $footer }}</p>
+                            </div>
+                            <div class="w-14 h-14 bg-navy-900 rounded-2xl flex items-center justify-center shadow-lg shadow-navy-900/20">
+                                <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v4H3V3zm14 0h4v4h-4V3zM3 17h4v4H3v-4zm11 0h1v1h-1v-1zm2 2h1v1h-1v-1zm-2 2h1v1h-1v-1zm5-2h1v1h-1v-1zm0 2h1v1h-1v-1zm-2-2h1v1h-1v-1zm0 2h1v1h-1v-1zM3 3h4v4H3V3zm14 0h4v4h-4V3zM3 17h4v4H3v-4zm0 4v-4H3v4h4zM17 3v4h4V3h-4zM7 3v4H3V3h4zm14 4h-4V3h4v4zm-4 10h1v1h-1v-1zm2 2h1v1h-1v-1zm-2 2h1v1h-1v-1zm5-2h1v1h-1v-1zm0 2h1v1h-1v-1zm-2-2h1v1h-1v-1zm0 2h1v1h-1v-1z"/></svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Action Area (Not part of the actual card image) --}}
-                <div class="bg-navy-900 p-6 flex flex-col gap-3">
-                    <button @click="show = false" class="w-full py-3 bg-white text-navy-900 font-black rounded-2xl hover:bg-tosca-500 hover:text-white transition-all uppercase tracking-widest text-xs">
+                <div class="bg-navy-900 p-8 flex flex-col gap-4">
+                    <button 
+                        @click="downloadCard()" 
+                        :disabled="downloading"
+                        class="w-full py-4 bg-tosca-500 text-white font-black rounded-3xl hover:bg-tosca-600 transition-all uppercase tracking-widest text-xs shadow-xl shadow-tosca-500/30 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                    >
+                        <template x-if="!downloading">
+                            <span class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Poster Impact
+                            </span>
+                        </template>
+                        <template x-if="downloading">
+                            <span class="flex items-center gap-3">
+                                <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                Memproses Gambar...
+                            </span>
+                        </template>
+                    </button>
+                    
+                    <button @click="show = false" class="w-full py-4 bg-white/10 text-white/60 font-black rounded-3xl hover:bg-white/20 hover:text-white transition-all uppercase tracking-widest text-[10px]">
                         Tutup
                     </button>
-                    <p class="text-[10px] text-white/40 text-center font-bold">Screenshot kartu ini untuk berbagi di media sosial!</p>
+                    
+                    <p class="text-[9px] text-white/30 text-center font-bold uppercase tracking-widest">Siap dibagikan ke Instagram Story atau WhatsApp Status</p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </div>
     </div>
