@@ -98,9 +98,9 @@
             <div class="space-y-4">
                 @foreach($topSponsors as $index => $sponsor)
                     <div class="bg-white p-5 rounded-3xl border border-navy-100 shadow-sm flex items-center gap-4 group hover:-translate-y-1 transition-all">
-                        <div class="w-12 h-12 rounded-2xl bg-navy-900 flex items-center justify-center text-white font-black text-xl shadow-lg relative shrink-0">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-black font-black text-xl shadow-lg relative shrink-0">
                             @if($sponsor->logo)
-                                <img src="{{ $sponsor->logo }}" class="w-full h-full object-cover rounded-2xl">
+                                <img src="{{ $sponsor->logo }}" class="w-max h-max object-cover rounded-2xl">
                             @else
                                 {{ substr($sponsor->name, 0, 1) }}
                             @endif

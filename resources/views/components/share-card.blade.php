@@ -66,7 +66,7 @@
                             <div class="w-32 h-32 rounded-[2.5rem] bg-white p-2 shadow-2xl rotate-3">
                                 <div class="w-full h-full rounded-[2.2rem] overflow-hidden bg-navy-50 -rotate-3 border-2 border-navy-100 flex items-center justify-center">
                                     @if($avatar)
-                                        <img src="{{ $avatar }}" alt="{{ $name }}" class="w-full h-full object-cover">
+                                        <img src="{{ $avatar }}" alt="{{ $name }}" class="object-cover">
                                     @else
                                         <span class="text-4xl font-black text-navy-200 uppercase">{{ substr($name, 0, 1) }}</span>
                                     @endif

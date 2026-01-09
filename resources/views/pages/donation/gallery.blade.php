@@ -110,7 +110,7 @@
                                 <p class="text-[10px] font-black text-navy-400 uppercase tracking-widest mt-1">{{ $donation->foods->count() }} Jenis Makanan • {{ round($donation->foods->sum('weight') / 1000) }} Kg</p>
                             </div>
                             @if($donation->sponsor->logo)
-                                <img src="{{ $donation->sponsor->logo }}" class="w-8 h-8 rounded-lg object-cover shadow-sm">
+                                <img src="{{ $donation->sponsor->logo }}" class="w-max h-8 rounded-lg object-cover shadow-sm">
                             @endif
                         </div>
                     </div>
@@ -183,7 +183,7 @@
 
                 {{-- Modal Footer --}}
                 <div class="px-8 py-6 bg-navy-50/50 border-t border-navy-50 flex items-center justify-between shrink-0">
-                    <p class="text-[10px] font-black text-navy-400 uppercase tracking-widest">Powered by Google Apps Script</p>
+                    <p class="text-[10px] font-black text-navy-400 uppercase tracking-widest"></p>
                     <a :href="'https://drive.google.com/drive/folders/' + activeFolder" target="_blank" class="text-xs font-black text-tosca-600 hover:text-tosca-700 flex items-center gap-2">
                         Buka di Drive
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
