@@ -1,128 +1,95 @@
 @extends('layouts.main')
 @section('container')
-    <a class="bg-orange-400 hover:bg-orange-600 shadow-md px-5 py-2.5 rounded-md text-white"
-        href="{{ route('donation.index') }}">
-        < Kembali</a>
-            <div class="max-w-md mx-auto mt-6 bg-navy p-5 text-center text-white font-bold rounded-t-md">
-                Edit Donasi
+    <div class="flex flex-wrap gap-3 items-center mb-6">
+        <x-btn-link href="{{ route('donation.index') }}" variant="ghost">
+            ← Kembali
+        </x-btn-link>
+    </div>
+
+    <div class="max-w-lg mx-auto">
+        <div class="bg-gradient-to-r from-orange-500 to-yellow-400 p-6 text-center text-white font-bold rounded-t-xl">
+            <h1 class="text-xl">Edit Donasi</h1>
+            <p class="text-sm font-normal text-white/80 mt-1">{{ $donation->sponsor->name }}</p>
+        </div>
+        <form method="POST" action="{{ route('donation.update', $donation->id) }}" 
+            class="bg-white shadow-lg px-8 py-8 rounded-b-xl border border-t-0 border-navy-100">
+            @csrf
+            @method('PUT')
+            
+            <div class="mb-6">
+                <label class="block mb-2 text-sm font-semibold text-navy-700">Donatur</label>
+                <input value="{{ $donation->sponsor->name }}" type="text"
+                    class="w-full px-4 py-3 text-sm text-navy-400 bg-navy-50 border border-navy-200 rounded-xl cursor-not-allowed"
+                    disabled readonly>
             </div>
-            <form method="POST" action="{{ route('donation.update', $donation->id) }}"
-                class="max-w-md mx-auto shadow-md px-10  py-6 rounded-b-md">
-                @csrf
-                @method('PUT')
-                <div class="relative z-0 w-full mb-7 group">
-                    <label for="quota" class="peer-focus:font-medium absolute text-sm -top-5 text-gray-500">Donatur</label>
-                    <input value="{{ $donation->sponsor->name }}" type="text" id="disabled-input-2"
-                        aria-label="disabled input 2"
-                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed"
-                        value="Disabled readonly input" disabled readonly>
-                </div>
-                <div class="relative z-0 w-full mb-5 group">
-                    <label for="quota" class="peer-focus:font-medium absolute text-sm -top-5 text-gray-500">Kuota</label>
-                    <input value="{{ $donation->quota }}" type="text" id="disabled-input-2" aria-label="disabled input 2"
-                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed"
-                        value="Disabled readonly input" disabled readonly>
-                </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="number" name="add" id="add"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " />
-                        <label for="add"
-                            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Tambah</label>
-                    </div>
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input type="number" name="diff" id="diff"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " />
-                        <label for="diff"
-                            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Kurang</label>
-                    </div>
-                </div>
-                <div class="relative z-0 w-full mb-5 group">
-                    <input value="{{ $donation->take }}" type="date" name="take" id="take"
-                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" " name="take" required />
-                    <label for="take"
-                        class="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pengambilan</label>
-                </div>
-                <div class="flex flex-row w-1/4 gap-1">
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input value="{{ $donation->hour }}" type="number" name="hour" id="hour"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " name="hour" required />
-                        <label for="hour"
-                            class="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Jam</label>
-                    </div>
-                    <div class="relative z-0 w-5 mb-5 group">
-                        <input
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " disabled />
-                        <label for="minute"
-                            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">:</label>
-                    </div>
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input value="{{ sprintf('%02d', $donation->minute) }}" type="number" name="minute" id="minute"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" " name="minute" />
-                        <label for="minute"
-                            class="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Menit</label>
-                    </div>
+            
+            <div class="mb-6">
+                <label class="block mb-2 text-sm font-semibold text-navy-700">Kuota Saat Ini</label>
+                <input value="{{ $donation->quota }}" type="text"
+                    class="w-full px-4 py-3 text-sm text-navy-400 bg-navy-50 border border-navy-200 rounded-xl cursor-not-allowed"
+                    disabled readonly>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <x-input name="add" label="Tambah Kuota" type="number" />
+                <x-input name="diff" label="Kurangi Kuota" type="number" />
+            </div>
+            
+            <x-input name="take" label="Tanggal Pengambilan" type="date" value="{{ $donation->take }}" required />
+            
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <x-input name="hour" label="Jam" type="number" value="{{ $donation->hour }}" required />
+                <div class="flex items-center justify-center text-navy-400 font-bold">:</div>
+                <x-input name="minute" label="Menit" type="number" value="{{ sprintf('%02d', $donation->minute) }}" />
+            </div>
+            
+            <x-input name="message" label="Pesan Khusus (opsional)" value="{{ $donation->message }}" />
 
-                </div>
-
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input value="{{ $donation->message }}" type="text" name="message" id="message"
-                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" " name="message" />
-                    <label for="message"
-                        class="peer-focus:font-medium absolute text-sm text-gray-500  duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pesan
-                        Khusus (opsional)</label>
-                </div>
+            <div class="flex flex-wrap gap-4 mb-6">
                 <label class="inline-flex items-center cursor-pointer">
-                    <input {{ $donation->charity ? 'checked' : '' }} type="checkbox" value="charity" name="charity"
-                        class="sr-only peer">
-                    <div
-                        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
-                    </div>
-                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Donasi</span>
+                    <input {{ $donation->charity ? 'checked' : '' }} type="checkbox" value="charity" name="charity" class="sr-only peer">
+                    <div class="relative w-11 h-6 bg-navy-100 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-tosca-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tosca-500"></div>
+                    <span class="ms-3 text-sm font-medium text-navy-700">Donasi</span>
                 </label>
-                @if ($donation->beneficiaries)
-                    <p class="text-xs text-gray-900">Beneficiaries :</p>
-                    <div class="flex gap-x-3 flex-wrap flex-row">
+            </div>
+            
+            @if ($donation->beneficiaries)
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-navy-700 mb-3">Beneficiaries:</p>
+                    <div class="flex gap-3 flex-row flex-wrap">
                         @foreach ($universities as $item)
-                            <div class="flex align-middle gap-2 my-2">
+                            <label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-navy-100 hover:border-tosca-300 cursor-pointer transition-colors">
                                 <input type="checkbox" name="beneficiaries[]" value="{{ $item->id }}"
                                     {{ in_array($item->id, json_decode($donation->beneficiaries)) ? 'checked' : '' }}
-                                    id="beneficiaries">
-                                <label for="beneficiaries" class="text-xs ">{{ $item->name }}</label>
-
-                            </div>
+                                    class="rounded text-tosca-500 focus:ring-tosca-300">
+                                <span class="text-sm text-navy-700">{{ $item->name }}</span>
+                            </label>
                         @endforeach
+                    </div>
+                </div>
+            @endif
+            
+            <div class="mb-6">
+                <p class="text-sm font-semibold text-navy-700 mb-3">Status:</p>
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all
+                        {{ $donation->status == 'aktif' ? 'border-lime-500 bg-lime-50' : 'border-navy-100 hover:border-navy-200' }}">
+                        <input type="radio" name="status" value="aktif" {{ $donation->status == 'aktif' ? 'checked' : '' }}
+                            class="text-lime-500 focus:ring-lime-300">
+                        <span class="text-sm font-medium text-navy-700">🟢 Aktif</span>
+                    </label>
+                    <label class="flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all
+                        {{ $donation->status == 'selesai' ? 'border-navy-500 bg-navy-50' : 'border-navy-100 hover:border-navy-200' }}">
+                        <input type="radio" name="status" value="selesai" {{ $donation->status == 'selesai' ? 'checked' : '' }}
+                            class="text-navy-500 focus:ring-navy-300">
+                        <span class="text-sm font-medium text-navy-700">✓ Selesai</span>
+                    </label>
+                </div>
+            </div>
 
-                    </div>
-                @endif
-                <fieldset class="grid grid-cols-2 mt-3">
-                    <div class="flex items-center mb-4">
-                        <input id="country-option-1" type="radio" name="status" value="aktif"
-                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
-                            {{ $donation->status == 'aktif' ? 'checked' : '' }}>
-                        <label for="country-option-1" class="block ms-2  text-sm font-medium text-gray-900">
-                            Aktif
-                        </label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input id="country-option-2" type="radio" name="status" value="selesai"
-                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
-                            {{ $donation->status == 'selesai' ? 'checked' : '' }}>
-                        <label for="country-option-2" class="block ms-2 text-sm font-medium text-gray-900">
-                            Selesai
-                        </label>
-                    </div>
-                </fieldset>
-
-                <button type="submit" value="simpan"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Simpan</button>
-            </form>
-        @endsection
+            <x-btn type="submit" variant="primary" class="w-full">
+                Simpan Perubahan
+            </x-btn>
+        </form>
+    </div>
+@endsection

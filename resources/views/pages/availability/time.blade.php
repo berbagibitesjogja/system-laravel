@@ -3,80 +3,84 @@
     $days = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 @endphp
 @section('container')
-    <div class="grid grid-cols-1 md:grid-cols-2">
-        <div class="">
-            <h1 class="text-center text-xl font-bold mb-6">Bersedia {{ $days[intval($avails[0]->day)] }}
-                {{ $avails[0]->hour }}.{{ str_pad($avails[0]->minute, 2, '0') }}</h1>
-            @foreach ($users as $item)
-                <span
-                    class="flex my-4 items-center bg-white border border-gray-200 rounded-lg shadow-sm flex-row max-w-xl hover:bg-gray-100">
-                    <img class="object-cover rounded-t-lg h-32 w-32" src="{{ $item->photo }}" alt="">
-                    <div class="flex flex-col justify-between p-4 leading-normal">
-                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ $item->name }}
-                        </h5>
-                        <a href="https://wa.me/{{ $item->phone }}"
-                            class="bg-green-600 w-max px-2 py-1 rounded-md text-white">Chat</a>
-                    </div>
-                </span>
-            @endforeach
-        </div>
-        <div>
-            <h1 class="text-center text-xl font-bold mb-6">Kesediaan Volunteer</h1>
-            <div id="accordion-collapse" data-accordion="collapse" class="mb-6">
-                <h2 id="accordion-collapse-heading-1">
-                    <button type="button"
-                        class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 hover:bg-gray-100"
-                        data-accordion-target="#accordion-collapse-body-1" aria-expanded="true"
-                        aria-controls="accordion-collapse-body-1">
-                        <span>{{ $days[1] }}</span>
-                        <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5 5 1 1 5" />
-                        </svg>
-                    </button>
-                </h2>
-                <div id="accordion-collapse-body-1" class="hidden" aria-labelledby="accordion-collapse-heading-1">
-                    <div class="p-5 border border-b-0 border-gray-200 flex gap-1 flex-row flex-wrap">
-                        @foreach ($avail->get(1) as $item)
-                            <a href="{{ route('availability.time', $item->first()->code) }}"
-                                class="bg-blue-100 text-blue-800 text-md font-medium px-3 py-1 rounded-sm">{{ $item->first()->hour }}.{{ str_pad($item->first()->minute, 2, '0') }}
-                                ({{ $item->count() }})
-                            </a>
-                        @endforeach
+    <div class="flex flex-col lg:flex-row gap-8">
+        {{-- Left Column: Volunteer List --}}
+        <div class="w-full lg:w-2/3">
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="bg-tosca-100 text-tosca-600 p-2 rounded-lg text-xl">🕒</span>
+                    <div>
+                        <h1 class="text-xl font-bold text-navy-900">
+                            {{ $days[intval($avails[0]->day)] }}
+                        </h1>
+                        <p class="text-sm font-medium text-navy-500">
+                            Pukul {{ $avails[0]->hour }}.{{ str_pad($avails[0]->minute, 2, '0') }}
+                        </p>
                     </div>
                 </div>
-                @for ($day = 2; $day <= 7; $day++)
-                    <h2 id="accordion-collapse-heading-{{ $day }}">
-                        <button type="button"
-                            class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 hover:bg-gray-100"
-                            data-accordion-target="#accordion-collapse-body-{{ $day }}" aria-expanded="false"
-                            aria-controls="accordion-collapse-body-2">
-                            <span>{{ $days[$day] }}</span>
-                            <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5 5 1 1 5" />
-                            </svg>
-                        </button>
-                    </h2>
-                    <div id="accordion-collapse-body-{{ $day }}" class="hidden"
-                        aria-labelledby="accordion-collapse-heading-{{ $day }}">
-                        <div class="p-5 border border-b-0 border-gray-200 flex gap-1 flex-row flex-wrap">
-                            @foreach ($avail->get($day) as $item)
-                                <a href="{{ route('availability.time', $item->first()->code) }}"
-                                    class="bg-blue-100 text-blue-800 text-md font-medium px-3 py-1 rounded-sm">{{ $item->first()->hour }}.{{ str_pad($item->first()->minute, 2, '0') }}
-                                    ({{ $item->count() }})
-                                </a>
-                            @endforeach
-                        </div>
+
+                @if($users->isEmpty())
+                    <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <span class="text-4xl block mb-2">🏜️</span>
+                        <p class="text-navy-400">Belum ada volunteer yang bersedia di jam ini.</p>
                     </div>
-                @endfor
+                @else
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach ($users as $item)
+                            <div class="flex items-start gap-4 p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:border-tosca-200 transition-all group">
+                                <img class="w-16 h-16 rounded-xl object-cover" src="{{ $item->photo }}" alt="{{ $item->name }}">
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="text-lg font-bold text-navy-900 truncate group-hover:text-tosca-600 transition-colors">
+                                        {{ $item->name }}
+                                    </h5>
+                                    <p class="text-xs text-navy-400 mb-3 truncate">{{ $item->email }}</p>
+                                    <a href="https://wa.me/{{ $item->phone }}" target="_blank"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 text-xs font-bold rounded-lg hover:bg-green-100 transition-colors">
+                                        <span>💬</span> Chat WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
-            <a href="{{ route('availability.dashboard') }}" class="bg-navy text-white rounded-md py-1 px-2">Atur
-                Kesediaan</a>
+        </div>
+
+        {{-- Right Column: Other Schedules --}}
+        <div class="w-full lg:w-1/3">
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6 sticky top-6">
+                <h2 class="text-lg font-bold text-navy-900 mb-4 flex items-center justify-between">
+                    <span>Jadwal Lain</span>
+                    <a href="{{ route('availability.dashboard') }}" class="text-xs font-semibold text-tosca-500 hover:text-tosca-600">
+                        Atur Jadwal →
+                    </a>
+                </h2>
+                
+                <div class="space-y-3">
+                    @for ($day = 1; $day <= 7; $day++)
+                        <div x-data="{ open: false }" class="border border-navy-50 rounded-xl overflow-hidden">
+                            <button @click="open = !open" class="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm">
+                                <span class="font-semibold text-navy-700">{{ $days[$day] }}</span>
+                                <span class="bg-white px-2 py-0.5 rounded text-xs text-navy-400 font-medium border border-gray-200">
+                                    {{ $avail->get($day)->count() }} slot
+                                </span>
+                            </button>
+                            <div x-show="open" class="p-3 bg-white border-t border-navy-50 flex flex-wrap gap-2 text-xs">
+                                @foreach ($avail->get($day) as $item)
+                                    <a href="{{ route('availability.time', $item->first()->code) }}"
+                                        class="px-2 py-1 rounded bg-tosca-50 text-tosca-700 hover:bg-tosca-100 transition-colors border border-tosca-100">
+                                        {{ $item->first()->hour }}.{{ str_pad($item->first()->minute, 2, '0') }}
+                                        <span class="text-tosca-400 ml-1">({{ $item->count() }})</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endfor
+                </div>
+            </div>
         </div>
     </div>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         document.querySelectorAll("input[type=checkbox]").forEach(function(d) {
             d.addEventListener('change', function(e) {

@@ -1,9 +1,9 @@
 @props(['name', 'label'])
 
-<div class="mb-5">
-    <label for="{{ $name }}" class="block mb-2 text-sm font-medium text-gray-900">{{ $label }}</label>
+<div class="mb-6">
+    <label for="{{ $name }}" class="block mb-2 text-sm font-semibold text-navy-700">{{ $label }}</label>
     <select id="{{ $name }}" name="{{ $name }}"
-        {{ $attributes->merge(['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5']) }}>
+        {{ $attributes->merge(['class' => 'w-full px-4 py-3 text-sm text-navy-900 bg-white border border-navy-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-tosca-300 focus:border-tosca-500 transition-all duration-300 cursor-pointer']) }}>
         {{ $slot }}
     </select>
 </div>

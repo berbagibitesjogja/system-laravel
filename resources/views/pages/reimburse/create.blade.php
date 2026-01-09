@@ -1,90 +1,91 @@
 @extends('layouts.main')
 
 @section('container')
-    <div class="max-w-6xl mx-auto py-10 px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap gap-3 items-center mb-8">
+            <x-btn-link href="{{ route('volunteer.home') }}" variant="ghost">
+                ← Kembali
+            </x-btn-link>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md overflow-hidden">
+                <div class="bg-gradient-to-r from-navy-500 to-tosca-500 p-6 text-white">
+                    <h1 class="text-xl font-bold">Ajukan Reimburse</h1>
+                    <p class="text-sm text-white/80 mt-1">Lengkapi form untuk mengajukan penggantian biaya</p>
+                </div>
 
-            {{-- Form Ajukan Reimburse --}}
-            <div class="bg-white rounded-2xl shadow p-6">
-                <h1 class="text-xl font-semibold mb-6 text-gray-800">Ajukan Reimburse</h1>
-
-                <form action="{{ route('reimburse.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('reimburse.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
                     @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Metode</label>
-                        <input type="text" name="method" placeholder="Contoh: BCA/BNI/ShopeePay/GoPay"
-                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    
+                    <x-input name="method" label="Metode Pembayaran" placeholder="Contoh: BCA/BNI/ShopeePay/GoPay" />
+                    
+                    <x-input name="target" label="Nomor Tujuan" placeholder="Contoh: 08912134452/1110003333" />
+
+                    <div class="mb-6">
+                        <label class="block mb-2 text-sm font-semibold text-navy-700">Upload Invoice</label>
+                        <div class="relative">
+                            <input type="file" name="file" id="file"
+                                class="w-full text-sm text-navy-600 
+                                    file:mr-4 file:py-2.5 file:px-5 
+                                    file:rounded-xl file:border-0 
+                                    file:text-sm file:font-semibold 
+                                    file:bg-tosca-500 file:text-white 
+                                    hover:file:bg-tosca-600
+                                    file:transition-colors file:duration-300
+                                    file:cursor-pointer
+                                    border border-navy-200 rounded-xl
+                                    focus:outline-none focus:ring-2 focus:ring-tosca-300">
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tujuan</label>
-                        <input type="text" name="target" placeholder="Contoh: 08912134452/1110003333"
-                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Upload Invoice</label>
-                        <input type="file" name="file"
-                            class="w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-4 
-                               file:rounded-lg file:border-0 
-                               file:text-sm file:font-semibold 
-                               file:bg-indigo-600 file:text-white 
-                               hover:file:bg-indigo-700">
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-indigo-600 text-white py-2 px-4 rounded-xl shadow hover:bg-indigo-700 transition">
-                        Ajukan
-                    </button>
+                    <x-btn type="submit" variant="primary" class="w-full">
+                        📤 Ajukan Reimburse
+                    </x-btn>
                 </form>
             </div>
 
-            {{-- Riwayat Pengajuan --}}
-            <div class="bg-white rounded-2xl shadow p-6">
-                <h1 class="text-xl font-semibold mb-6 text-gray-800">Riwayat Pengajuan</h1>
+            <div class="bg-white rounded-2xl border border-navy-100 shadow-md overflow-hidden">
+                <div class="bg-navy-50 p-6 border-b border-navy-100">
+                    <h1 class="text-xl font-bold text-navy-900">Riwayat Pengajuan</h1>
+                    <p class="text-sm text-navy-400 mt-1">Pantau status pengajuan reimburse Anda</p>
+                </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-600">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700">
-                                <th class="px-4 py-2">Metode</th>
-                                <th class="px-4 py-2">Tujuan</th>
-                                <th class="px-4 py-2">Jumlah</th>
-                                <th class="px-4 py-2">Status</th>
-                                <th class="px-4 py-2">File</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($reimburse as $item)
-                                <tr class="border-b">
-                                    <td class="px-4 py-2">{{ $item->method }}</td>
-                                    <td class="px-4 py-2">{{ $item->target }}</td>
-                                    <td class="px-4 py-2 font-medium">
-                                        {{ 'Rp ' . number_format($item->amount, 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        @if ($item->done)
-                                            <span
-                                                class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Selesai</span>
-                                        @else
-                                            <span
-                                                class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">Proses</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
-                                            class="text-indigo-600 hover:underline">
-                                            Lihat
-                                        </a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-4 py-4 text-center text-gray-500">Belum ada pengajuan</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <div class="p-4">
+                    @forelse ($reimburse as $item)
+                        <div class="p-4 mb-3 rounded-xl border border-navy-100 hover:border-tosca-300 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <p class="font-semibold text-navy-900">{{ $item->method }}</p>
+                                    <p class="text-sm text-navy-400">{{ $item->target }}</p>
+                                </div>
+                                @if ($item->done)
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-lime-400 text-navy-900">
+                                        ✓ Selesai
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-300 text-navy-900">
+                                        ⏳ Proses
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg text-tosca-600">
+                                    Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                </span>
+                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                    class="text-sm text-tosca-500 hover:text-tosca-600 font-medium transition-colors">
+                                    📄 Lihat File
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <span class="text-5xl mb-3">📋</span>
+                            <p class="text-navy-400">Belum ada pengajuan</p>
+                            <p class="text-sm text-navy-300">Ajukan reimburse pertama Anda!</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

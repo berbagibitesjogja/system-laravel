@@ -1,71 +1,80 @@
 @extends('layouts.main')
 @section('container')
-    <a href="{{ route('precence.index') }}" class="bg-orange-400 hover:bg-orange-600 p-2 text-white rounded-md shadow-md">
-        < Kembali </a>
-            <a href="{{ route('precence.qr', $precence->id) }}"
-                class="bg-navy-500 hover:bg-navy-600 p-2 ml-3 text-white rounded-md shadow-md">
-                Download QR </a>
-            <div class="mt-6">
-                <h1>Tanggal : {{ $precence->created_at->isoFormat('dddd, DD MMMM YYYY') }}</h1>
-                <h1>Judul : {{ $precence->title }}</h1>
-                <h1>Hadir : {{ $precence->attendance->count() }}</h1>
-            </div>
-            @if ($user->role == 'super' || $user->division->name == 'Friend')
-                <div>
-                    <form method="POST" action="{{ route('attendance.manual', ['precence' => $precence->id]) }}">
-                        @csrf
-                        <select name="user_id" id="id" class="border border-1 border-blue p-2 rounded-md bg-gray-100">
-                            <option value="">Masukkan Manual</option>
-                            @foreach ($yet as $vol)
-                                <option value="{{ $vol->id }}">{{ $vol->name }}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" class='bg-navy-500 rounded-md py-1 text-white px-3'>Tambah</button>
-                    </form>
-                </div>
-            @endif
-            <table class="mt-6 shadow-md sm:rounded-lg text-center w-full text-sm text-left rtl:text-right text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Nama
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Waktu
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Jarak
-                        </th>
-                        <th scope="col" class="hidden sm:table-cell px-6 py-3">
-                            Poin
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($precence->attendance as $item)
-                        <tr>
-                            <td class="px-6 py-3">
-                                {{ $item->user->name }}
-                            </td>
-                            <td class="px-6 py-3">
-                                {{ $item->created_at->isoFormat('hh:mm') }}
-                            </td>
-                            <td class="px-6 py-3">
-                                {{ $item->distance }} m
-                            </td>
-                            <td class="hidden sm:table-cell px-6 py-3">
-                                <form action="{{ route('precence.update', $precence->id) }}" method="post">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="attendance_id" value="{{ $item->id }}">
-                                    <input type="number" class="border-2 rounded-xl py-1 w-20 px-2 text-center"
-                                        placeholder="0" name="point" value="{{ $item->point }}">
-                                </form>
+    <div class="flex flex-wrap gap-3 items-center mb-6">
+        <x-btn-link href="{{ route('precence.index') }}" variant="ghost">
+            ← Kembali
+        </x-btn-link>
+        <x-btn-link href="{{ route('precence.qr', $precence->id) }}" variant="navy">
+            📥 Download QR
+        </x-btn-link>
+    </div>
 
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6 mb-8">
+        <h1 class="text-2xl font-bold text-navy-900 mb-2">{{ $precence->title }}</h1>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            <div class="bg-gradient-to-br from-white to-navy-50 p-4 rounded-xl border border-navy-100">
+                <p class="text-sm text-navy-400">Tanggal</p>
+                <p class="text-lg font-bold text-navy-900">{{ $precence->created_at->isoFormat('D MMMM Y') }}</p>
             </div>
-        @endsection
+            <div class="bg-gradient-to-br from-white to-tosca-50 p-4 rounded-xl border border-navy-100">
+                <p class="text-sm text-navy-400">Hadir</p>
+                <p class="text-2xl font-bold text-tosca-600">{{ $precence->attendance->count() }} <span class="text-sm text-navy-400">Orang</span></p>
+            </div>
+        </div>
+    </div>
+
+    @if ($user->role == 'super' || $user->division->name == 'Friend')
+        <div class="bg-white rounded-2xl border border-navy-100 shadow-md p-6 mb-8">
+            <form method="POST" action="{{ route('attendance.manual', ['precence' => $precence->id]) }}" class="flex flex-wrap gap-3 items-end">
+                @csrf
+                <div class="flex-1 min-w-[200px]">
+                    <x-select name="user_id" label="Masukkan Manual">
+                        <option value="">Pilih Volunteer</option>
+                        @foreach ($yet as $vol)
+                            <option value="{{ $vol->id }}">{{ $vol->name }}</option>
+                        @endforeach
+                    </x-select>
+                </div>
+                <x-btn type="submit" variant="primary">
+                    + Tambah
+                </x-btn>
+            </form>
+        </div>
+    @endif
+    
+    <x-table>
+        <x-slot:head>
+            <x-th>Nama</x-th>
+            <x-th>Waktu</x-th>
+            <x-th>Jarak</x-th>
+            <x-th class="hidden sm:table-cell">Poin</x-th>
+        </x-slot:head>
+        <x-slot:body>
+            @foreach ($precence->attendance as $item)
+                <x-tr>
+                    <x-td>
+                        <p class="font-semibold text-navy-900">{{ $item->user->name }}</p>
+                    </x-td>
+                    <x-td>
+                        <span class="text-navy-600">{{ $item->created_at->isoFormat('HH:mm') }}</span>
+                    </x-td>
+                    <x-td>
+                        <span class="font-medium {{ $item->distance <= 100 ? 'text-lime-600' : 'text-orange-500' }}">
+                            {{ $item->distance }} m
+                        </span>
+                    </x-td>
+                    <x-td class="hidden sm:table-cell">
+                        <form action="{{ route('precence.update', $precence->id) }}" method="post">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="attendance_id" value="{{ $item->id }}">
+                            <input type="number" 
+                                class="w-20 px-3 py-2 text-center border border-navy-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-tosca-300 focus:border-tosca-500 transition-all duration-300" 
+                                placeholder="0" name="point" value="{{ $item->point }}">
+                        </form>
+                    </x-td>
+                </x-tr>
+            @endforeach
+        </x-slot:body>
+    </x-table>
+@endsection

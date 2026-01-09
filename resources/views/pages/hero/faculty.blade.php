@@ -1,70 +1,58 @@
 @extends('layouts.main')
 @section('container')
-    <div class="flex gap-3 w-max">
-        <a class="bg-orange-400 hover:bg-orange-600 shadow-md p-2 rounded-md text-white" href="{{ route('hero.index') }}">
-            < Kembali</a>
-                <div class="w-max bg-navy-500 py-2 px-4 text-white rounded-md shadow-md">
-                    Heroes : {{ $heroes->total() }} Orang
-                </div>
+    <div class="flex flex-wrap gap-3 items-center mb-6">
+        <x-btn-link href="{{ route('hero.index') }}" variant="ghost">
+            ← Kembali
+        </x-btn-link>
+        <div class="px-4 py-2 bg-navy-500 text-white rounded-xl shadow-md font-semibold">
+            Heroes: {{ $heroes->total() }} Orang
+        </div>
     </div>
-    <h1 class="text-center mt-6 font-bold text-xl">{{ $heroes[0]->faculty->name }}
-        {{ $heroes[0]->faculty->university->name }}</h1>
-    <div class="my-6">
+    
+    @if($heroes->count() > 0)
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-navy-900">{{ $heroes[0]->faculty->name }}</h1>
+            <p class="text-navy-400">{{ $heroes[0]->faculty->university->name }}</p>
+        </div>
+    @endif
+    
+    <div class="mb-6">
         {{ $heroes->links() }}
     </div>
-    <div class="shadow-md sm:rounded-lg mt-3">
-        <table class="text-center w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Nama
-                    </th>
-                    <th scope="col" class="hidden sm:table-cell px-6 py-3">
-                        Fakultas
-                    </th>
-                    {{-- <th scope="col" class="hidden sm:table-cell px-6 py-3">
-                        Telepon
-                    </th> --}}
-                    <th scope="col" class="px-6 py-3">
-                        Donasi
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($heroes as $item)
-                    <tr class="odd:bg-white even:bg-gray-50 border-b">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ $item->name }}
-                        </th>
-                        <td class="px-6 py-4 hidden sm:table-cell">
-                            <a href="{{ route('hero.faculty', $item->faculty) }}">
-                                {{ $item->faculty->name }}
-                                @if ($item->quantity > 1)
-                                    ({{ $item->quantity }} Orang)
-                                @endif
-                            </a>
-
-                        </td>
-                        {{-- <td class="px-6 py-4 hidden sm:table-cell">
-                            {{ $item->phone }}
-
-                        </td> --}}
-                        <td class="px-6 py-4 flex flex-col">
-                            @php
-                                $donation = $item->donation;
-                            @endphp
-                            <a href="{{ route('donation.show', $donation->id) }}" class="block">
-                                <span class="block">
-                                    {{ $donation->sponsor->name }}
-
+    
+    <x-table>
+        <x-slot:head>
+            <x-th>Nama</x-th>
+            <x-th class="hidden sm:table-cell">Fakultas</x-th>
+            <x-th>Donasi</x-th>
+        </x-slot:head>
+        <x-slot:body>
+            @foreach ($heroes as $item)
+                @php
+                    $donation = $item->donation;
+                @endphp
+                <x-tr>
+                    <x-td>
+                        <p class="font-semibold text-navy-900">{{ $item->name }}</p>
+                    </x-td>
+                    <x-td class="hidden sm:table-cell">
+                        <a href="{{ route('hero.faculty', $item->faculty) }}" class="hover:text-tosca-600 transition-colors">
+                            <p class="font-medium">{{ $item->faculty->name }}</p>
+                            @if ($item->quantity > 1)
+                                <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-lime-400 text-navy-900">
+                                    {{ $item->quantity }} Orang
                                 </span>
-                                {{ \Carbon\Carbon::parse($donation->take)->isoFormat('dddd, DD MMMM Y') }}
-                            </a>
-
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                            @endif
+                        </a>
+                    </x-td>
+                    <x-td>
+                        <a href="{{ route('donation.show', $donation->id) }}" class="hover:text-tosca-600 transition-colors">
+                            <p class="font-medium text-navy-900">{{ $donation->sponsor->name }}</p>
+                            <p class="text-sm text-navy-400">{{ \Carbon\Carbon::parse($donation->take)->isoFormat('dddd, DD MMMM Y') }}</p>
+                        </a>
+                    </x-td>
+                </x-tr>
+            @endforeach
+        </x-slot:body>
+    </x-table>
 @endsection

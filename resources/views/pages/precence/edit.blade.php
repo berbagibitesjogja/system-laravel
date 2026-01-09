@@ -1,77 +1,54 @@
 @extends('layouts.main')
 @section('container')
-    <div class="mt-3 flex gap-3 w-max">
-        <a class="bg-orange-400 hover:bg-orange-600 shadow-md p-2 rounded-md text-white" href="{{ route('precence.index') }}">
-            < Kembali</a>
-
+    <div class="flex flex-wrap gap-3 items-center mb-6">
+        <x-btn-link href="{{ route('precence.index') }}" variant="ghost">
+            ← Kembali
+        </x-btn-link>
     </div>
 
-
-    <div class="mt-5 max-w-md mx-auto bg-navy p-5 text-center text-white font-bold rounded-t-md">
-        Edit Presensi
+    <div class="max-w-lg mx-auto">
+        <div class="bg-gradient-to-r from-orange-500 to-yellow-400 p-6 text-center text-white font-bold rounded-t-xl">
+            <h1 class="text-xl">Edit Presensi</h1>
+            <p class="text-sm font-normal text-white/80 mt-1">{{ $precence->title }}</p>
+        </div>
+        <form method="POST" action="{{ route('precence.update', $precence->id) }}" 
+            class="bg-white shadow-lg px-8 py-8 rounded-b-xl border border-t-0 border-navy-100">
+            @csrf
+            @method('PUT')
+            
+            <x-input name="title" label="Judul" value="{{ $precence->title }}" required />
+            <x-input name="description" label="Deskripsi (opsional)" value="{{ $precence->description }}" />
+            
+            @if ($user->role == 'super')
+                <div class="p-4 mb-6 bg-navy-50 rounded-xl border border-navy-100">
+                    <p class="text-sm font-semibold text-navy-700 mb-4">📍 Pengaturan Lokasi (Super Admin)</p>
+                    <x-input name="latitude" label="Latitude" value="{{ $precence->latitude }}" />
+                    <x-input name="longitude" label="Longitude" value="{{ $precence->longitude }}" />
+                    <x-input name="max_distance" label="Jarak Maksimal (meter)" type="number" value="{{ $precence->max_distance }}" />
+                </div>
+            @endif
+            
+            <div class="mb-6">
+                <p class="text-sm font-semibold text-navy-700 mb-3">Status:</p>
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all
+                        {{ $precence->status == 'active' ? 'border-lime-500 bg-lime-50' : 'border-navy-100 hover:border-navy-200' }}">
+                        <input type="radio" name="status" value="active" {{ $precence->status == 'active' ? 'checked' : '' }}
+                            class="text-lime-500 focus:ring-lime-300">
+                        <span class="text-sm font-medium text-navy-700">🟢 Aktif</span>
+                    </label>
+                    <label class="flex items-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all
+                        {{ $precence->status == 'end' ? 'border-navy-500 bg-navy-50' : 'border-navy-100 hover:border-navy-200' }}">
+                        <input type="radio" name="status" value="end" {{ $precence->status == 'end' ? 'checked' : '' }}
+                            class="text-navy-500 focus:ring-navy-300">
+                        <span class="text-sm font-medium text-navy-700">✓ Selesai</span>
+                    </label>
+                </div>
+            </div>
+            
+            <x-btn type="submit" variant="primary" class="w-full">
+                Simpan Perubahan
+            </x-btn>
+        </form>
     </div>
-    <form method="POST" action="{{ route('precence.update', $precence->id) }}"
-        class="max-w-md mx-auto shadow-md px-10  py-6 rounded-b-md">
-        @csrf
-        @method('PUT')
-        <div class="relative z-0 w-full mb-5 group">
-            <input type="text" name="title" id="title" value="{{ $precence->title }}"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" " name="title" required />
-            <label for="title"
-                class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Judul</label>
-        </div>
-        <div class="relative z-0 w-full mb-5 group">
-            <input type="text" name="description" id="description" value="{{ $precence->description }}"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" " name="description" />
-            <label for="description"
-                class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Deskripsi
-                (opsional)</label>
-        </div>
-        @if ($user->role == 'super')
-            <div class="relative z-0 w-full mb-5 group">
-                <input type="text" name="latitude" id="latitude" value="{{ $precence->latitude }}"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " name="latitude" />
-                <label for="latitude"
-                    class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Latitude</label>
-            </div>
-            <div class="relative z-0 w-full mb-5 group">
-                <input type="text" name="longitude" id="longitude" value="{{ $precence->longitude }}"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " name="longitude" />
-                <label for="longitude"
-                    class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Longitude</label>
-            </div>
-            <div class="relative z-0 w-full mb-5 group">
-                <input type="number" name="max_distance" id="max_distance" value="{{ $precence->max_distance }}"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" " name="max_distance" />
-                <label for="max_distance"
-                    class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Jarak
-                    maximal</label>
-            </div>
-        @endif
-        <fieldset class="grid grid-cols-2">
-            <div class="flex items-center mb-4">
-                <input id="country-option-1" type="radio" name="status" value="active"
-                    class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
-                    {{ $precence->status == 'active' ? 'checked' : '' }}>
-                <label for="country-option-1" class="block ms-2  text-sm font-medium text-gray-900">
-                    Aktif
-                </label>
-            </div>
-            <div class="flex items-center mb-4">
-                <input id="country-option-2" type="radio" name="status" value="end"
-                    class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
-                    {{ $precence->status == 'end' ? 'checked' : '' }}>
-                <label for="country-option-2" class="block ms-2 text-sm font-medium text-gray-900">
-                    Selesai
-                </label>
-            </div>
-        </fieldset>
-        <button type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
-    </form>
 @endsection

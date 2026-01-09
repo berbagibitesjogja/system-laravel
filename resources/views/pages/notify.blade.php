@@ -1,29 +1,47 @@
 @extends('layouts.form')
 @section('container')
-    <div class="max-w-lg mx-auto mt-6">
-        <div class="w-full rounded-lg bg-white shadow-lg mt-8 py-5 px-6">
-            <form action="">
-                <h1 class="text-xl text-tosca font-medium text-center italic">Dapatkan notifikasi dari kami ketika ada donasi
-                    aktif
-                </h1>
-                <div class="relative z-0 mt-8 w-full group">
-                    <input autocomplete="off" type="number" name="phone" id="phone"
-                        class="block py-2.5 px-6 w-full text-xs text-gray-900 bg-transparent border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" " phone="phone" required />
-                    <p
-                        class="absolute text-md text-gray-700 duration-300 transform -translate-y-0 scale-75 top-2 left-2 -z-10 origin-[0]">
-                        62</p>
-                    <label for="phone"
-                        class="peer-focus:font-medium absolute text-md text-gray-700 duration-300 transform -translate-y-8 scale-75 top-2 left-6 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8">Nomor
-                        Whatsapp</label>
+    <div class="max-w-md mx-auto pt-10 pb-12">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-navy-50">
+            <div class="bg-gradient-to-r from-navy-600 to-navy-800 p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-white opacity-5 mix-blend-overlay" 
+                     style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                    <span class="text-3xl">🔔</span>
                 </div>
-                <button type="submit"
-                    class="text-sm bg-navy hover:bg-navy-600 mt-8 w-max rounded-md py-2 px-4 m-auto text-center block text-white font-medium text-center italic">Dapatkan
-                    Notifikasi</button>
-                <h1 class="text-xs text-slate-400 font-medium text-center italic mt-3">karena keterbatasan pendonor hanya
-                    bisa digunakan dengan email UGM (mail.ugm.ac.id)</h1>
+                <h1 class="text-2xl font-bold text-white mb-2">Pasang Pengingat</h1>
+                <p class="text-navy-100 text-sm">Jangan lewatkan kesempatan berbagi berikutnya!</p>
+            </div>
 
+            <form action="" class="p-8">
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-navy-400 uppercase mb-2">WhatsApp</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <span class="font-bold text-navy-500 group-focus-within:text-tosca-500 transition-colors">+62</span>
+                        </div>
+                        <input type="tel" name="phone" 
+                               class="w-full pl-14 pr-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-navy-900 font-semibold placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-tosca-500 focus:border-transparent transition-all"
+                               placeholder="812345678" required>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-tosca-500 hover:bg-tosca-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-tosca-200 transform transition hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-2">
+                    <span>✨</span> Aktifkan Notifikasi
+                </button>
+
+                <div class="mt-6 text-center">
+                    <p class="text-xs text-gray-400 bg-gray-50 py-2 px-4 rounded-lg inline-block">
+                        *Hanya berlaku untuk email UGM (mail.ugm.ac.id)
+                    </p>
+                </div>
             </form>
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="/" class="text-sm font-semibold text-navy-400 hover:text-navy-600 transition-colors">
+                ← Kembali ke Beranda
+            </a>
         </div>
     </div>
 @endsection
