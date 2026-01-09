@@ -26,7 +26,7 @@
             </x-btn-link>
         @endif
 
-        <x-btn @click="$dispatch('open-share')" variant="tosca" class="hidden md:flex">
+        <x-btn @click="$dispatch('open-share')" variant="tosca" class="flex">
             🤳 Bagikan Impact
         </x-btn>
 
