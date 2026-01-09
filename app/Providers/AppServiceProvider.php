@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
         LogViewer::auth(function ($request) {
             return $request->user();
         });
+
+        \App\Models\Heroes\Hero::observe(\App\Observers\HeroObserver::class);
+        \App\Models\Volunteer\User::observe(\App\Observers\UserObserver::class);
     }
 }

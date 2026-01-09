@@ -21,59 +21,45 @@
 
     </div>
     <div class="flex justify-start flex-row gap-y-3 my-4 gap-x-4 flex-wrap">
-        <a class="bg-navy hover:shadow-xl hover:bg-navy-600 py-1 px-6 text-white rounded-md" href="{{ route('reimburse.create') }}">Ajukan Reimburse</a>
+        <x-nav-link href="{{ route('reimburse.create') }}">Ajukan Reimburse</x-nav-link>
         @if ($user->role=='super' || $user->division->name=='Friend')
-        <a class="bg-navy hover:shadow-xl hover:bg-navy-600 py-1 px-6 text-white rounded-md" href="{{ route('reimburse.index') }}">Reimburse</a>
-        <a class="bg-navy hover:shadow-xl hover:bg-navy-600 py-1 px-6 text-white rounded-md" href="{{ route('precence.index') }}">Presensi</a>
+        <x-nav-link href="{{ route('reimburse.index') }}">Reimburse</x-nav-link>
+        <x-nav-link href="{{ route('precence.index') }}">Presensi</x-nav-link>
         @endif
         @if ($user->role!='member')
             
-        <a class="bg-navy hover:shadow-xl hover:bg-navy-600 py-1 px-6 text-white rounded-md" href="{{ route('volunteer.index') }}">Volunteer</a>
+        <x-nav-link href="{{ route('volunteer.index') }}">Volunteer</x-nav-link>
         @endif
         @if ($precence==1)
-        <a class="bg-navy hover:shadow-xl hover:bg-navy-600 py-1 px-6 text-white rounded-md" href="{{ route('precence.qr', 'scan') }}">Scan QR</a>
+        <x-nav-link href="{{ route('precence.qr', 'scan') }}">Scan QR</x-nav-link>
      
-                <a href="{{ route('precence.qr', 'view') }}"
-                    class="bg-navy-500 hover:bg-navy-600 p-2 text-white rounded-md shadow-md">
+                <x-action-link href="{{ route('precence.qr', 'view') }}">
                     Lihat QR Code
-                </a>
-                <a href="{{ route('precence.qr', 'download') }}"
-                        class="bg-navy-500 hover:bg-navy-600 p-2 text-white rounded-md shadow-md">
+                </x-action-link>
+                <x-action-link href="{{ route('precence.qr', 'download') }}">
                         Download QR Code
-                </a>
+                </x-action-link>
             
         @endif
     </div>
     <div class="grid sm:grid-cols-2 md:grid-cols-4 grid-cols-1 gap-2 mt-3">
-        <div class="bg-white rounded-lg shadow-md p-4 w-full flex gap-2">
-            <div class="bg-tosca rounded-full px-2.5 py-2 w-max flex justify-center items-center">
-                <img width="36px" src="{{ asset('assets/donate.svg') }}" alt="">
-            </div>
-            <div>
-                <p class="text-slate-600 italic text-xs sm:text-xs md:text-sm">Food Rescue</p>
-                <p class="font-bold text-md sm:text-lg md:text-xl">{{ $donations->count() }} Aksi</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg shadow-md p-4 w-full flex gap-2">
-            <div class="bg-tosca rounded-full px-2 pb-3 w-max flex justify-center items-center">
-                <img width="40px" src="{{ asset('assets/food.svg') }}" alt="">
-            </div>
-            <div>
-                <p class="text-slate-600 italic text-xs sm:text-xs md:text-sm">Food Rescue</p>
-                <p class="font-bold text-md sm:text-lg md:text-xl">{{ round($foods->sum('weight') / 1000) }} Kg</p>
-            </div>
-        </div>
+        <x-stat-card 
+            icon="{{ asset('assets/donate.svg') }}" 
+            label="Food Rescue" 
+            value="{{ $donations->count() }} Aksi" 
+        />
         
-        <div class="bg-white rounded-lg shadow-md p-4 w-full flex gap-2">
-            <div class="bg-tosca rounded-full p-2 w-max flex justify-center items-center">
-                <img width="36px" src="{{ asset('assets/people.svg') }}" alt="">
-            </div>
-            <div>
-                <p class="text-slate-600 italic text-xs sm:text-xs md:text-sm">Total Heroes</p>
-                <p class="font-bold text-md sm:text-lg md:text-xl">{{ $heroes->sum('quantity') }} Orang</p>
-            </div>
-        </div>
+        <x-stat-card 
+            icon="{{ asset('assets/food.svg') }}" 
+            label="Food Rescue" 
+            value="{{ round($foods->sum('weight') / 1000) }} Kg" 
+        />
         
+        <x-stat-card 
+            icon="{{ asset('assets/people.svg') }}" 
+            label="Total Heroes" 
+            value="{{ $heroes->sum('quantity') }} Orang" 
+        />
     </div>
     <h1 class="font-bold text-navy text-xl md:text-2xl my-12">Statistik Heroes {{ count($lastData) }} Bulan Terakhir</h1>
     <div>
