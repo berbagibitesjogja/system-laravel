@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 
 class DonationController extends Controller
 {
-    use BotVolunteerTrait, BotHeroTrait;
+    use BotHeroTrait, BotVolunteerTrait;
+
     public function index()
     {
         $donations = Donation::with('sponsor')->orderByRaw("CASE WHEN status = 'aktif' THEN 0 WHEN status = 'selesai' THEN 1 ELSE 2 END")
@@ -21,6 +22,7 @@ class DonationController extends Controller
 
         return view('pages.donation.index', compact('donations'));
     }
+
     public function charity()
     {
         $donations = Donation::where('charity', 1)->with('sponsor')->orderByRaw("CASE WHEN status = 'aktif' THEN 0 WHEN status = 'selesai' THEN 1 ELSE 2 END")
@@ -29,6 +31,7 @@ class DonationController extends Controller
 
         return view('pages.donation.index', compact('donations'));
     }
+
     public function rescue()
     {
         $donations = Donation::where('charity', 0)->with('sponsor')->orderByRaw("CASE WHEN status = 'aktif' THEN 0 WHEN status = 'selesai' THEN 1 ELSE 2 END")
@@ -64,9 +67,9 @@ class DonationController extends Controller
             $minutes = (int) $request->input('duration');
             $from = Carbon::createFromTime($donation->hour, $donation->minute);
             $until = $from->copy()->addMinutes($minutes);
-            $take = $from->format('H:i') . ' - ' . $until->format('H:i');
+            $take = $from->format('H:i').' - '.$until->format('H:i');
         } else {
-            $take = str_pad($donation->hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($donation->minute, 2, '0', STR_PAD_LEFT);
+            $take = str_pad($donation->hour, 2, '0', STR_PAD_LEFT).':'.str_pad($donation->minute, 2, '0', STR_PAD_LEFT);
         }
 
         if ($request->has('notify')) {
@@ -154,6 +157,7 @@ class DonationController extends Controller
         }
         $donation->charity = $request->has('charity');
         $donation->save();
+
         return redirect()->route('donation.index')->with('success', 'Berhasil mengubah data donasi');
     }
 
@@ -161,8 +165,10 @@ class DonationController extends Controller
     {
         if ($donation->heroes->count() == 0 && $donation->foods->count() == 0) {
             $donation->delete();
+
             return redirect()->route('donation.index')->with('success', 'Berhasil menghapus donasi');
         }
+
         return redirect()->route('donation.index')->with('error', 'Gagal menghapus donasi');
     }
 
@@ -186,6 +192,7 @@ class DonationController extends Controller
         if (preg_match('/id=([a-zA-Z0-9-_]+)/', $url, $match)) {
             return $match[1];
         }
+
         return $url;
     }
 }

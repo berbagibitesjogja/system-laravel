@@ -31,6 +31,7 @@
                     x-show="search === '' || $el.innerText.toLowerCase().includes(search.toLowerCase())"
                     :name="$item->name"
                     :id="$item->id"
+                    :image="$item->logo??null"
                     :variant="$item->variant"
                     :badge="$item->donation->count() > 10 ? 'Top Partner' : ($item->donation->count() > 5 ? 'Loyalist' : 'New Partner')"
                     :stats="[

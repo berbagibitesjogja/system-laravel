@@ -17,7 +17,7 @@
         <div class="flex items-start justify-between mb-4">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-navy-50 to-tosca-50 flex items-center justify-center text-navy-600 font-black text-2xl border border-navy-50 group-hover:scale-110 transition-transform duration-500 shrink-0 uppercase">
                 @if($image)
-                    <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-cover rounded-2xl">
+                    <img src="{{ $image }}" alt="{{ $name }}" class="object-cover rounded-2xl">
                 @else
                     {{ substr($name, 0, 1) }}
                 @endif

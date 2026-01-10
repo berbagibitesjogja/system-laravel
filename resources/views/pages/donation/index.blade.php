@@ -47,6 +47,9 @@
                 <x-fab onClick="window.location.href='{{ route('donation.create') }}'" label="Tambah Donasi" />
             @endif
         @endauth
+        <div class="mb-6">
+            {{ $donations->links() }}
+        </div>
         <x-table>
             <x-slot:head>
                 <x-th class="hidden sm:table-cell">Tanggal</x-th>
