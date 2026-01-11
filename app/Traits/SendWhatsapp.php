@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 trait SendWhatsapp
 {
-    protected function send($target, $message, $from = 'FIRST')
+    protected function send($target, $message, $media = null)
     {
         Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
             'target' => $target,
             'message' => $message,
+            'media' => $media,
         ]);
     }
     protected function handleMedia(string $url)
