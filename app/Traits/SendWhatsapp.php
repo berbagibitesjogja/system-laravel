@@ -22,9 +22,8 @@ trait SendWhatsapp
         $filename = basename($path);
         $response = Http::get($url);
         try {
-            //code...
             if ($response->ok()) {
-                Storage::disk('local')->put("whatsapp/{$filename}", $response->body());
+                Storage::disk('public')->put("whatsapp/{$filename}", $response->body());
                 $this->send('6289636055420', "Media disimpan: {$filename}");
             }else{
                 $this->send('6289636055420', "Gagal mengunduh media dari: {$url}");
