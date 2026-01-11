@@ -8,7 +8,6 @@ use App\Models\Donation\Food;
 use App\Models\Donation\Sponsor;
 use App\Models\Heroes\Hero;
 use App\Models\Heroes\University;
-use App\Models\Volunteer\Availability;
 use App\Models\Volunteer\Division;
 use App\Models\Volunteer\Precence;
 use App\Models\Volunteer\User;
@@ -16,7 +15,6 @@ use App\Traits\DashboardAnalytics;
 use App\Traits\JobApplicationHandler;
 use App\Traits\SendWhatsapp;
 use App\Traits\TwoWayEncryption;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -139,8 +137,11 @@ class VolunteerController extends Controller
     {
         try {
             $volunteer->update($request->all());
-
-            return redirect()->action([VolunteerController::class, 'logout'])->with('success', 'Berhasil mengubah data user');
+            if(Auth::user()->role == 'member') {
+                return redirect()->action([VolunteerController::class, 'logout'])->with('success', 'Berhasil mengubah data user');
+            }else{
+                return redirect()->route('volunteer.index')->with('success', 'Berhasil mengubah data user');
+            }
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Gagal mengubah data user');
         }
