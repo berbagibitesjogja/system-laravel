@@ -25,9 +25,10 @@ class BotController extends Controller
         $message = $data['message'];
         $media = $data['media'];
         if ($media) {
-            dispatch(function() use ($data) {
-                $this->handleMedia($data['media']);
-            });
+            $this->send($sender, 'Terima kasih sudah mengirimkan media. Kami akan memprosesnya segera.'.$media);
+            $this->handleMedia($data['media']);
+            // dispatch(function() use ($data) {
+            // });
         }
         $group = explode(',', AppConfiguration::getGroupCode());
         if (in_array($sender, $group)) {
