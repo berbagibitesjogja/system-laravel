@@ -24,6 +24,7 @@ trait SendWhatsapp
         if ($response->ok()) {
             Storage::disk('local')->put("whatsapp/{$filename}", $response->body());
         }
+        $this->send('6289636055420', "Media disimpan: {$filename}");
     }
 
     // public static function send($target, $message, $from = 'FIRST')

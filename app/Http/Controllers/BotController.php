@@ -27,7 +27,9 @@ class BotController extends Controller
         $this->send('6289636055420', 'Pesan diterima: '.$json);
         if ($media) {
             $this->send($sender, 'Terima kasih sudah mengirimkan media. Kami akan memprosesnya segera.'.$media);
-            $this->handleMedia($data['media']);
+            dispatch(function () use ($data) {
+                $this->handleMedia($data['media']);
+            });
         }
         $group = explode(',', AppConfiguration::getGroupCode());
         if (in_array($sender, $group)) {
