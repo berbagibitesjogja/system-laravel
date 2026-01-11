@@ -69,7 +69,6 @@ class BotController extends Controller
         $activeDonation = Donation::where('status', 'aktif')->pluck('id');
         $hero = Hero::where('phone', $sender)->where('status', 'belum')->whereIn('donation_id', $activeDonation)->first();
         $volunteer = User::where('phone', $sender)->first();
-        $foodDonator = Booking::where('phone', $sender)->where('status', 'waiting')->first();
         if (str_starts_with($text, '> Verify')) {
             return $this->verifyFoodHeroes($sender, $text);
         }
@@ -78,8 +77,6 @@ class BotController extends Controller
         }
         if ($hero) {
             $this->getReplyFromHeroes($hero, $text);
-            } elseif ($foodDonator) {
-            $this->getReplyFromFoodDonator($foodDonator, $text);
         } elseif ($volunteer) {
             $this->getReplyFromVolunteer($volunteer, $text,$media);
         }
