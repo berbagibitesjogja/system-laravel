@@ -8,7 +8,12 @@ use App\Models\AppConfiguration;
 use App\Models\Donation\Donation;
 use App\Models\Donation\Sponsor;
 use App\Models\Heroes\Hero;
+use App\Models\Volunteer\Reimburse;
 use App\Models\Volunteer\User;
+use Gemini;
+use Gemini\Data\Blob;
+use Gemini\Enums\MimeType;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -34,9 +39,10 @@ trait BotVolunteerTrait
     }
     protected function createReimburse($user, $reimburse)
     {
+        $url = Storage::disk('public')->url($reimburse->file);
         $amount = "Rp " . number_format($reimburse->amount, 0, ',', '.');
-        $this->send($user->phone, "Reimburse sebesar $amount sedang diajukan", AppConfiguration::useWhatsapp());
-        $this->send(AppConfiguration::getReimburseContact(), "Reimburse sebesar {$amount} sedang diajukan oleh {$user->name} melalui {$reimburse->method} dengan nomor {$reimburse->target}", 'SECOND');
+        $this->send($user->phone, "Reimburse sebesar $amount sedang diajukan");
+        $this->send(AppConfiguration::getReimburseContact(), "Reimburse sebesar {$amount} sedang diajukan oleh {$user->name} melalui {$reimburse->method} dengan nomor {$reimburse->target}", $url);
     }
 
     protected function replyHero($sender, $message)
@@ -98,6 +104,54 @@ trait BotVolunteerTrait
     {
         return Http::post("https://berbagibitesjogja.com/pemkot/from-fonnte", $payload);
     }
+
+    protected function getReplyFromVolunteer($volunteer, $text,$media)
+    {
+        if (str_starts_with($text, 'Reimburse')) {
+            $data = $this->parseReimburseMessage($text);
+
+            $client = Gemini::client(config('gemini.api_key'));
+            $result = $client->generativeModel("models/gemini-2.5-flash")
+                ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
+                    mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
+                    data: base64_encode(Http::get($media)->body())
+                )])
+                ->text();
+            if ($result != "0") {
+                $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
+                file_put_contents($tmp, Http::get($media)->body());
+
+                $path = Storage::disk('public')->putFile(
+                    'reimburse',
+                    new File($tmp)
+                );
+
+                $reimburse = Reimburse::create([
+                    'amount' => (int) $result,
+                    'user_id' => $volunteer->id,
+                    'file' => $path,
+                    'method' => $data['method'],
+                    'target' => $data['target'],
+                    'notes' => $data['notes'],
+                ]);
+                $this->createReimburse($volunteer, $reimburse);
+                return back()->with("success", "Reimbursement submitted!");
+            }
+        }
+    }
+
+    private function parseReimburseMessage(string $message): array
+    {
+        preg_match_all('/^(Metode|Tujuan|Keterangan)\s*:\s*(.+)$/mi', $message, $matches);
+
+        return [
+            'method' => $matches[2][array_search('Metode', $matches[1])] ?? null,
+            'target' => $matches[2][array_search('Tujuan', $matches[1])] ?? null,
+            'notes' => $matches[2][array_search('Keterangan', $matches[1])] ?? null,
+        ];
+    }
+
+
     protected function getRecap()
     {
         $volunteers = User::withCount('attendances')

@@ -6,6 +6,7 @@ use App\Models\AppConfiguration;
 use App\Models\Donation\Booking;
 use App\Models\Donation\Donation;
 use App\Models\Heroes\Hero;
+use App\Models\Volunteer\User;
 use App\Traits\BotDonationTrait;
 use App\Traits\BotHeroTrait;
 use App\Traits\BotVolunteerTrait;
@@ -24,7 +25,6 @@ class BotController extends Controller
         $sender = $data['sender'];
         $message = $data['message'];
         $media = $data['media'];
-        $this->send('6289636055420', 'Pesan diterima: '.$json);
         if ($media) {
             dispatch(function () use ($data) {
                 $this->handleMedia($data['media']);
@@ -60,14 +60,15 @@ class BotController extends Controller
                 $this->getStatus($sender, $message);
             }
         } else {
-            $this->getReplyFromStranger($sender, $message);
+            $this->getReplyFromPersonal($sender, $message,$media);
         }
     }
 
-    public function getReplyFromStranger($sender, $text)
+    public function getReplyFromPersonal($sender, $text,$media)
     {
         $activeDonation = Donation::where('status', 'aktif')->pluck('id');
         $hero = Hero::where('phone', $sender)->where('status', 'belum')->whereIn('donation_id', $activeDonation)->first();
+        $volunteer = User::where('phone', $sender)->first();
         $foodDonator = Booking::where('phone', $sender)->where('status', 'waiting')->first();
         if (str_starts_with($text, '> Verify')) {
             return $this->verifyFoodHeroes($sender, $text);
@@ -77,12 +78,11 @@ class BotController extends Controller
         }
         if ($hero) {
             $this->getReplyFromHeroes($hero, $text);
-        } elseif ($foodDonator) {
+            } elseif ($foodDonator) {
             $this->getReplyFromFoodDonator($foodDonator, $text);
-        } else {
-            // $this->gemini($sender, $text);
+        } elseif ($volunteer) {
+            $this->getReplyFromVolunteer($volunteer, $text,$media);
         }
-
         return true;
     }
 

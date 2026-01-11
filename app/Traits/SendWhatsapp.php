@@ -10,7 +10,8 @@ trait SendWhatsapp
 {
     protected function send($target, $message, $media = null)
     {
-        Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
+        // Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
+        Http::post('http://localhost:3000' . '/send', [
             'target' => $target,
             'message' => $message,
             'media' => $media,
