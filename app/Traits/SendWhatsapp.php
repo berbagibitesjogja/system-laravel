@@ -20,8 +20,10 @@ trait SendWhatsapp
     {
         $path = parse_url($url, PHP_URL_PATH);
         $filename = basename($path);
-        $fileContents = file_get_contents($url);
-        Storage::put("whatsapp/{$filename}", $fileContents);
+        $response = Http::get($url);
+        if ($response->ok()) {
+            Storage::disk('local')->put("whatsapp/{$filename}", $response->body());
+        }
     }
 
     // public static function send($target, $message, $from = 'FIRST')
