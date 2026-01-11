@@ -60,8 +60,7 @@ trait BotVolunteerTrait
             . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
             . "_Silakan lakukan pembayaran dan kirimkan bukti pembayaran_\n"
             . "_dengan caption gambar:_\n"
-            . "*Payment {$reimburse->id}*\n"
-            . "_Contoh: Payment 32_",
+            . "*Payment {$reimburse->id}*\n",
             $url
         );
 
