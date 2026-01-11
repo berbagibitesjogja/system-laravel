@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Http;
 
 class BotController extends Controller
 {
-    use BotVolunteerTrait, BotHeroTrait, BotDonationTrait, SendWhatsapp;
+    use BotDonationTrait, BotHeroTrait, BotVolunteerTrait, SendWhatsapp;
+
     public function fromFonnte()
     {
         header('Content-Type: application/json; charset=utf-8');
@@ -22,6 +23,12 @@ class BotController extends Controller
         $data = json_decode($json, true);
         $sender = $data['sender'];
         $message = $data['message'];
+        $media = $data['media'];
+        if ($media) {
+            dispatch(function() use ($data) {
+                $this->handleMedia($data['media']);
+            });
+        }
         $group = explode(',', AppConfiguration::getGroupCode());
         if (in_array($sender, $group)) {
             if ($message == '@BOT donasi hari ini') {
@@ -61,10 +68,10 @@ class BotController extends Controller
         $activeDonation = Donation::where('status', 'aktif')->pluck('id');
         $hero = Hero::where('phone', $sender)->where('status', 'belum')->whereIn('donation_id', $activeDonation)->first();
         $foodDonator = Booking::where('phone', $sender)->where('status', 'waiting')->first();
-        if (str_starts_with($text, "> Verify")) {
+        if (str_starts_with($text, '> Verify')) {
             return $this->verifyFoodHeroes($sender, $text);
         }
-        if (str_starts_with($text, "> Verifikasi")) {
+        if (str_starts_with($text, '> Verifikasi')) {
             return $this->verifyNotify($sender, $text);
         }
         if ($hero) {
@@ -74,12 +81,13 @@ class BotController extends Controller
         } else {
             // $this->gemini($sender, $text);
         }
+
         return true;
     }
 
     public static function sendForPublic($target, $message, $from = 'FIRST')
     {
-        Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
+        Http::post(AppConfiguration::getWhatsAppEndpoint().'/send', [
             'target' => $target,
             'message' => $message,
         ]);

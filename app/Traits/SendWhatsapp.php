@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\AppConfiguration;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 trait SendWhatsapp
 {
@@ -13,6 +14,13 @@ trait SendWhatsapp
             'target' => $target,
             'message' => $message,
         ]);
+    }
+    protected function handleMedia(string $url)
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+        $filename = basename($path);
+        $fileContents = file_get_contents($url);
+        Storage::put("whatsapp/{$filename}", $fileContents);
     }
 
     // public static function send($target, $message, $from = 'FIRST')
