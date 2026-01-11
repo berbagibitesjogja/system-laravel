@@ -33,6 +33,7 @@ Route::redirect('home', '');
 
 Route::controller(VolunteerController::class)->group(function () {
     Route::get('', 'home')->name('volunteer.home');
+    Route::get('profile', 'profile')->name('volunteer.profile');
     Route::get('hall-of-fame', 'hallOfFame')->name('hall-of-fame');
     Route::get('auth/google/callback', 'authenticate');
     Route::get('login', 'login')->name('login');

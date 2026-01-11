@@ -3,7 +3,7 @@
     <div class="flex justify-between flex-wrap-reverse flex-row gap-y-4">
         <div class="flex md:w-max w-full justify-start gap-2">
         </div>
-        <a href="{{ route('volunteer.show', $user->id) }}" class="flex md:w-max w-full justify-end gap-3 items-center group">
+        <a href="{{ route('volunteer.profile') }}" class="flex md:w-max w-full justify-end gap-3 items-center group">
             <div class="text-end">
                 <p class="font-semibold text-navy-900 group-hover:text-navy-600 transition-colors">{{ $user->name }}</p>
                 <p class="text-sm text-navy-400">{{ $user->division->name }} ({{ $user->attendances->count() }} Aksi)</p>
