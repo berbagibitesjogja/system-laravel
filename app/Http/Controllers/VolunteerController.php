@@ -27,7 +27,7 @@ class VolunteerController extends Controller
     public function home()
     {
         if (! Auth::user()) {
-            return redirect()->action([HeroController::class, 'create']);
+            return redirect()->action([VolunteerController::class, 'login']);
         }
 
         $lastData = $this->getDonationAnalytics(11);
