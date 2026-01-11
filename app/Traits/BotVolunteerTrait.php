@@ -107,9 +107,10 @@ trait BotVolunteerTrait
 
     protected function getReplyFromVolunteer($volunteer, $text,$media)
     {
-        if (str_starts_with($text, 'Reimburse')) {
+        if(strtolower($text) == 'reimburse'){
+            $this->send($volunteer->phone,"Reimburse\n\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk");
+        }elseif (str_starts_with($text, 'Reimburse')) {
             $data = $this->parseReimburseMessage($text);
-
             $client = Gemini::client(config('gemini.api_key'));
             $result = $client->generativeModel("models/gemini-2.5-flash")
                 ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
@@ -136,8 +137,7 @@ trait BotVolunteerTrait
                 ]);
                 $this->createReimburse($volunteer, $reimburse);
             }
-        }
-        if (str_starts_with($text, 'Payment')) {
+        }elseif (str_starts_with($text, 'Payment')) {
             $code = str_replace('Payment ','',$text);
             $reimburse = Reimburse::find($code);
             $tmp = tempnam(sys_get_temp_dir(), 'payment_');

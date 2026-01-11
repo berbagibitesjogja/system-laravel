@@ -22,14 +22,14 @@
             Aksi Cepat
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-action-card href="{{ route('reimburse.create') }}" color="orange" icon="{{ asset('assets/donate.svg') }}">
+            {{-- <x-action-card href="{{ route('reimburse.create') }}" color="orange" icon="{{ asset('assets/donate.svg') }}">
                 Ajukan Reimburse
-            </x-action-card>
+            </x-action-card> --}}
             
             @if ($user->role=='super' || $user->division->name=='Friend')
-                <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
+                {{-- <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
                     Data Reimburse
-                </x-action-card>
+                </x-action-card> --}}
                 <x-action-card href="{{ route('precence.index') }}" color="navy" icon="{{ asset('assets/people.svg') }}">
                     Presensi Volunteer
                 </x-action-card>
