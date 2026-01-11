@@ -147,7 +147,7 @@ trait BotVolunteerTrait
                 'payment',
                 new File($tmp)
                 );
-            $reimburse->update(['payment'=>$path]);
+            $reimburse->update(['payment'=>$path,'done'=>true]);
             $this->send($reimburse->user->phone,"Reimburse sebesar {$reimburse->amount} telah diberikan",$media);
             $this->send(AppConfiguration::getReimburseContact(),"Terimakasih reimburse nya");
         }
