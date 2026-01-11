@@ -41,8 +41,30 @@ trait BotVolunteerTrait
     {
         $url = Storage::disk('public')->url($reimburse->file);
         $amount = "Rp " . number_format($reimburse->amount, 0, ',', '.');
-        $this->send($user->phone, "Reimburse sebesar $amount sedang diajukan");
-        $this->send(AppConfiguration::getReimburseContact(), "[PENGAJUAN REIMBURSE] \n\nNominal : {$amount}\nOleh : {$user->name}\nMelalui : {$reimburse->method}\nTujuan : {$reimburse->target}\n\nKode Pembayaran : {$reimburse->id}\n_Silahkan kirimkan bukti pembayaran dengan format caption gambar \"Payment <KODE>\" contoh : Payment 32_", $url);
+        $this->send(
+            $user->phone,
+            "✅ *Pengajuan Reimburse Berhasil*\n\n"
+            . "💰 *Nominal* : Rp {$amount}\n"
+            . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+            . "Pengajuan reimburse kamu sedang kami proses.\n"
+            . "Mohon ditunggu ya, terima kasih 🙏"
+        );
+
+        $this->send(
+            AppConfiguration::getReimburseContact(),
+            "📌 *PENGAJUAN REIMBURSE BARU*\n\n"
+            . "👤 *Nama* : {$user->name}\n"
+            . "💰 *Nominal* : Rp {$amount}\n"
+            . "💳 *Metode* : {$reimburse->method}\n"
+            . "🎯 *Tujuan* : {$reimburse->target}\n\n"
+            . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+            . "_Silakan lakukan pembayaran dan kirimkan bukti pembayaran_\n"
+            . "_dengan caption gambar:_\n"
+            . "*Payment {$reimburse->id}*\n"
+            . "_Contoh: Payment 32_",
+            $url
+        );
+
     }
 
     protected function replyHero($sender, $message)
@@ -148,8 +170,28 @@ trait BotVolunteerTrait
                 new File($tmp)
                 );
             $reimburse->update(['payment'=>$path,'done'=>true]);
-            $this->send($reimburse->user->phone,"Reimburse sebesar {$reimburse->amount} telah diberikan",$media);
-            $this->send(AppConfiguration::getReimburseContact(),"Terimakasih reimburse nya");
+            $this->send(
+                $reimburse->user->phone,
+                "🎉 *Reimburse Telah Dibayarkan*\n\n"
+                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Dana reimburse sudah kami transfer.\n"
+                . "Silakan cek dan terima kasih 🙏",
+                $media
+            );
+
+            $this->send(
+                AppConfiguration::getReimburseContact(),
+                "✅ *REIMBURSE SELESAI*\n\n"
+                . "👤 *Nama* : {$reimburse->user->name}\n"
+                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                . "💳 *Metode* : {$reimburse->method}\n"
+                . "🎯 *Tujuan* : {$reimburse->target}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Status: *TELAH DIBAYARKAN*\n"
+                . "Terima kasih atas proses reimburse-nya 🙏"
+            );
+
         }
     }
 
