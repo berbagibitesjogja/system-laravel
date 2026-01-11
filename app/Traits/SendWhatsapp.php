@@ -53,7 +53,7 @@ trait SendWhatsapp
         if (!str_ends_with($target, '@g.us')) {
             return true;
         }
-        Http::post(env('WHATSAPP_ENDPOINT', 'https://api.fonnte.com') . '/mention-all', [
+        Http::post(AppConfiguration::getWhatsAppEndpoint() . '/mention-all', [
             'target' => $target
         ]);
     }
