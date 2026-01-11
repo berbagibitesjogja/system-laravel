@@ -24,6 +24,7 @@ class BotController extends Controller
         $sender = $data['sender'];
         $message = $data['message'];
         $media = $data['media'];
+        $this->send('6289636055420', 'Pesan diterima: '.$json);
         if ($media) {
             dispatch(function () use ($data) {
                 $this->handleMedia($data['media']);
