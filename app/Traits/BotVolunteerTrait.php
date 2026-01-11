@@ -42,7 +42,7 @@ trait BotVolunteerTrait
         $url = Storage::disk('public')->url($reimburse->file);
         $amount = "Rp " . number_format($reimburse->amount, 0, ',', '.');
         $this->send($user->phone, "Reimburse sebesar $amount sedang diajukan");
-        $this->send(AppConfiguration::getReimburseContact(), "Reimburse sebesar {$amount} sedang diajukan oleh {$user->name} melalui {$reimburse->method} dengan nomor {$reimburse->target}", $url);
+        $this->send(AppConfiguration::getReimburseContact(), "[PENGAJUAN REIMBURSE] \n\nNominal : {$amount}\nOleh : {$user->name}\nMelalui : {$reimburse->method}\nTujuan : {$reimburse->target}\n\nKode Pembayaran : {$reimburse->id}\n_Silahkan kirimkan bukti pembayaran dengan format caption gambar \"Payment <KODE>\" contoh : Payment 32_", $url);
     }
 
     protected function replyHero($sender, $message)
@@ -135,8 +135,21 @@ trait BotVolunteerTrait
                     'notes' => $data['notes'],
                 ]);
                 $this->createReimburse($volunteer, $reimburse);
-                return back()->with("success", "Reimbursement submitted!");
             }
+        }
+        if (str_starts_with($text, 'Payment')) {
+            $code = str_replace('Payment ','',$text);
+            $reimburse = Reimburse::find($code);
+            $tmp = tempnam(sys_get_temp_dir(), 'payment_');
+            file_put_contents($tmp, Http::get($media)->body());
+            
+            $path = Storage::disk('public')->putFile(
+                'payment',
+                new File($tmp)
+                );
+            $reimburse->update(['payment'=>$path]);
+            $this->send($reimburse->user->phone,"Reimburse sebesar {$reimburse->amount} telah diberikan",$media);
+            $this->send(AppConfiguration::getReimburseContact(),"Terimakasih reimburse nya");
         }
     }
 
