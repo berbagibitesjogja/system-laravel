@@ -71,7 +71,7 @@
             <div class="bg-white rounded-[2rem] border border-navy-100 divide-y divide-navy-50 overflow-hidden shadow-sm">
                 @foreach($topVolunteers->skip(3) as $index => $item)
                     <div class="flex items-center gap-4 p-5 hover:bg-navy-50 transition-colors group">
-                        <span class="w-8 text-sm font-black text-navy-300">#{{ $index + 4 }}</span>
+                        <span class="w-8 text-sm font-black text-navy-300">#{{ $index }}</span>
                         <div class="w-10 h-10 rounded-xl overflow-hidden shadow-sm">
                             <img src="{{ $item->photo }}" class="w-full h-full object-cover">
                         </div>
