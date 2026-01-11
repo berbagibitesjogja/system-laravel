@@ -20,6 +20,11 @@ class AppConfiguration extends Model
         $phone = AppConfiguration::where('key', 'REIMBURSE_CONTACT')->first();
         return $phone->value;
     }
+    public static function getWhatsAppEndpoint()
+    {
+        $endpoint = AppConfiguration::where('key', 'WHATSAPP_ENDPOINT')->first();
+        return $endpoint->value;
+    }
     public static function getGroupCode()
     {
         $code = AppConfiguration::where('key', 'GROUP_WA')->first();
