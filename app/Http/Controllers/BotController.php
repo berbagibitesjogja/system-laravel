@@ -30,8 +30,8 @@ class BotController extends Controller
                 $this->handleMedia($data['media']);
             });
         }
-        $group = explode(',', AppConfiguration::getGroupCode());
-        if (in_array($sender, $group)) {
+        // $group = explode(',', AppConfiguration::getGroupCode());
+        if (str_ends_with($sender, '@g.us')) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
             } elseif ($message == '@BOT hero hari ini') {
@@ -60,11 +60,11 @@ class BotController extends Controller
                 $this->getStatus($sender, $message);
             }
         } else {
-            $this->getReplyFromPersonal($sender, $message,$media);
+            $this->getReplyFromPersonal($sender, $message, $media);
         }
     }
 
-    public function getReplyFromPersonal($sender, $text,$media)
+    public function getReplyFromPersonal($sender, $text, $media)
     {
         $activeDonation = Donation::where('status', 'aktif')->pluck('id');
         $hero = Hero::where('phone', $sender)->where('status', 'belum')->whereIn('donation_id', $activeDonation)->first();
@@ -78,14 +78,14 @@ class BotController extends Controller
         if ($hero) {
             $this->getReplyFromHeroes($hero, $text);
         } elseif ($volunteer) {
-            $this->getReplyFromVolunteer($volunteer, $text,$media);
+            $this->getReplyFromVolunteer($volunteer, $text, $media);
         }
         return true;
     }
 
     public static function sendForPublic($target, $message, $from = 'FIRST')
     {
-        Http::post(AppConfiguration::getWhatsAppEndpoint().'/send', [
+        Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
             'target' => $target,
             'message' => $message,
         ]);

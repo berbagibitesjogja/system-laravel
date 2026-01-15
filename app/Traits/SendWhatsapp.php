@@ -10,6 +10,9 @@ trait SendWhatsapp
 {
     protected function send($target, $message, $media = null)
     {
+        if (in_array($media, ['FIRST', 'SECOND'])) {
+            $media = null;
+        }
         Http::post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
             'target' => $target,
             'message' => $message,
@@ -60,7 +63,7 @@ trait SendWhatsapp
     // }
     protected function mentionAll($target)
     {
-        
+
         if (!str_ends_with($target, '@g.us')) {
             return true;
         }
