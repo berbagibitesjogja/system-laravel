@@ -34,7 +34,7 @@ class BotController extends Controller
             });
         }
         // $group = explode(',', AppConfiguration::getGroupCode());
-        if ($message == '@BOT status')) {
+        if ($message == '@BOT status') {
             $this->getStatus($sender, $message);
         }
         if (str_ends_with($sender, '@g.us')) {
