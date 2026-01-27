@@ -22,18 +22,19 @@ class BotController extends Controller
         header('Content-Type: application/json; charset=utf-8');
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-        logs()->info($data);
-        logs()->info($json);
         $sender = $data['sender'];
         $message = $data['message'];
-        $media = $data['media'];
+        $media = $data['media'] ?? null;
+        logs()->info("Sender ". $sender);
+        logs()->info("Message ". $message);
+        logs()->info("Media ". $media);
         if ($media) {
-            dispatch(function () use ($data) {
-                $this->handleMedia($data['media']);
+            dispatch(function () {
+                $this->handleMedia($media);
             });
         }
         // $group = explode(',', AppConfiguration::getGroupCode());
-        if (str_starts_with($message, '@BOT status')) {
+        if ($message == '@BOT status')) {
             $this->getStatus($sender, $message);
         }
         if (str_ends_with($sender, '@g.us')) {
