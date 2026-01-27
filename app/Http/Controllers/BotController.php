@@ -24,12 +24,12 @@ class BotController extends Controller
         $data = json_decode($json, true);
         $sender = $data['sender'];
         $message = $data['message'];
-        // $media = $data['media'];
-        // if ($media) {
-        //     dispatch(function () use ($data) {
-        //         $this->handleMedia($data['media']);
-        //     });
-        // }
+        $media = $data['media'];
+        if ($media) {
+            dispatch(function () use ($data) {
+                $this->handleMedia($data['media']);
+            });
+        }
         // $group = explode(',', AppConfiguration::getGroupCode());
         if (str_ends_with($sender, '@g.us')) {
             if ($message == '@BOT donasi hari ini') {
