@@ -31,6 +31,9 @@ class BotController extends Controller
             });
         }
         // $group = explode(',', AppConfiguration::getGroupCode());
+        if (str_starts_with($message, '@BOT status')) {
+            $this->getStatus($sender, $message);
+        }
         if (str_ends_with($sender, '@g.us')) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
@@ -57,8 +60,6 @@ class BotController extends Controller
                 $this->replyHero($sender, $message);
             } elseif (str_starts_with($message, '@BOT dokumentasi')) {
                 $this->giveDocumentation($message);
-            } elseif (str_starts_with($message, '@BOT status')) {
-                $this->getStatus($sender, $message);
             }
         } else {
             $this->getReplyFromPersonal($sender, $message, $media);
