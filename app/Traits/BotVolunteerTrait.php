@@ -128,70 +128,70 @@ trait BotVolunteerTrait
     protected function getReplyFromVolunteer($volunteer, $text, $media)
     {
         if (strtolower($text) == 'reimburse') {
-            $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            // $this->send($volunteer->phone,"Reimburse\n\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk");
+            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
+            $this->send($volunteer->phone,"Reimburse\n\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk");
         } elseif (str_starts_with($text, 'Reimburse')) {
-            $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            // $data = $this->parseReimburseMessage($text);
-            // $client = Gemini::client(config('gemini.api_key'));
-            // $result = $client->generativeModel("models/gemini-2.5-flash")
-            //     ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
-            //         mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
-            //         data: base64_encode(Http::get($media)->body())
-            //     )])
-            //     ->text();
-            // if ($result != "0") {
-            //     $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
-            //     file_put_contents($tmp, Http::get($media)->body());
+            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
+            $data = $this->parseReimburseMessage($text);
+            $client = Gemini::client(config('gemini.api_key'));
+            $result = $client->generativeModel("models/gemini-2.5-flash")
+                ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
+                    mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
+                    data: base64_encode(Http::get($media)->body())
+                )])
+                ->text();
+            if ($result != "0") {
+                $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
+                file_put_contents($tmp, Http::get($media)->body());
 
-            //     $path = Storage::disk('public')->putFile(
-            //         'reimburse',
-            //         new File($tmp)
-            //     );
+                $path = Storage::disk('public')->putFile(
+                    'reimburse',
+                    new File($tmp)
+                );
 
-            //     $reimburse = Reimburse::create([
-            //         'amount' => (int) $result,
-            //         'user_id' => $volunteer->id,
-            //         'file' => $path,
-            //         'method' => $data['method'],
-            //         'target' => $data['target'],
-            //         'notes' => $data['notes'],
-            //     ]);
-            //     $this->createReimburse($volunteer, $reimburse);
-            // }
+                $reimburse = Reimburse::create([
+                    'amount' => (int) $result,
+                    'user_id' => $volunteer->id,
+                    'file' => $path,
+                    'method' => $data['method'],
+                    'target' => $data['target'],
+                    'notes' => $data['notes'],
+                ]);
+                $this->createReimburse($volunteer, $reimburse);
+            }
         } elseif (str_starts_with($text, 'Payment')) {
-            $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            //             $code = str_replace('Payment ','',$text);
-            //             $reimburse = Reimburse::find($code);
-            // $tmp = tempnam(sys_get_temp_dir(), 'payment_');
-            // file_put_contents($tmp, Http::get($media)->body());
+            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
+                        $code = str_replace('Payment ','',$text);
+                        $reimburse = Reimburse::find($code);
+            $tmp = tempnam(sys_get_temp_dir(), 'payment_');
+            file_put_contents($tmp, Http::get($media)->body());
 
-            // $path = Storage::disk('public')->putFile(
-            //     'payment',
-            //     new File($tmp)
-            //     );
-            //     $reimburse->update(['payment'=>$path,'done'=>true]);
-            //     $this->send(
-            //         $reimburse->user->phone,
-            //         "🎉 *Reimburse Telah Dibayarkan*\n\n"
-            //         . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-            //         . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-            //         . "Dana reimburse sudah kami transfer.\n"
-            //         . "Silakan cek dan terima kasih 🙏",
-            //         $media
-            // );
+            $path = Storage::disk('public')->putFile(
+                'payment',
+                new File($tmp)
+                );
+                $reimburse->update(['payment'=>$path,'done'=>true]);
+                $this->send(
+                    $reimburse->user->phone,
+                    "🎉 *Reimburse Telah Dibayarkan*\n\n"
+                    . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                    . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                    . "Dana reimburse sudah kami transfer.\n"
+                    . "Silakan cek dan terima kasih 🙏",
+                    $media
+            );
 
-            // $this->send(
-            //     AppConfiguration::getReimburseContact(),
-            //     "✅ *REIMBURSE SELESAI*\n\n"
-            //     . "👤 *Nama* : {$reimburse->user->name}\n"
-            //     . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-            //     . "💳 *Metode* : {$reimburse->method}\n"
-            //     . "🎯 *Tujuan* : {$reimburse->target}\n"
-            //     . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-            //     . "Status: *TELAH DIBAYARKAN*\n"
-            //     . "Terima kasih atas proses reimburse-nya 🙏"
-            //     );
+            $this->send(
+                AppConfiguration::getReimburseContact(),
+                "✅ *REIMBURSE SELESAI*\n\n"
+                . "👤 *Nama* : {$reimburse->user->name}\n"
+                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                . "💳 *Metode* : {$reimburse->method}\n"
+                . "🎯 *Tujuan* : {$reimburse->target}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Status: *TELAH DIBAYARKAN*\n"
+                . "Terima kasih atas proses reimburse-nya 🙏"
+                );
 
         }
     }

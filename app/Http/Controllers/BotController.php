@@ -24,16 +24,12 @@ class BotController extends Controller
         $data = json_decode($json, true);
         $sender = $data['sender'];
         $message = $data['message'];
-        $media = $data['media'] ?? null;
-        logs()->info("Sender ". $sender);
-        logs()->info("Message ". $message);
-        logs()->info("Media ". $media);
+        $media = $data['url'] ?? null;
         if ($media) {
             dispatch(function () {
                 $this->handleMedia($media);
             });
         }
-        // $group = explode(',', AppConfiguration::getGroupCode());
         if ($message == '@BOT status') {
             $this->getStatus($sender, $message);
         }
