@@ -26,7 +26,7 @@ class BotController extends Controller
         $message = $data['message'];
         $media = $data['url'] ?? null;
         if ($media) {
-            dispatch(function () {
+            dispatch(function () use ($media) {
                 $this->handleMedia($media);
             });
         }
