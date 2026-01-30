@@ -129,7 +129,7 @@ trait BotVolunteerTrait
     {
         if (strtolower($text) == 'reimburse') {
             // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            $this->send($volunteer->phone,"Reimburse\n\Nominal : ex. 100.000\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk\n\n*nominal tanpa Rp ataupun koma, hanya . sebagai pemisah 0");
+            $this->send($volunteer->phone,"Reimburse\nNominal : ex. 100.000\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk\n\n*nominal tanpa Rp ataupun koma, hanya . sebagai pemisah 0");
         } elseif (str_starts_with($text, 'Reimburse')) {
             // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
             $data = $this->parseReimburseMessage($text);
