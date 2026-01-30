@@ -129,17 +129,18 @@ trait BotVolunteerTrait
     {
         if (strtolower($text) == 'reimburse') {
             // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            $this->send($volunteer->phone,"Reimburse\n\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk");
+            $this->send($volunteer->phone,"Reimburse\n\Nominal : ex. 100.000\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk\n\n*nominal tanpa Rp ataupun koma, hanya . sebagai pemisah 0");
         } elseif (str_starts_with($text, 'Reimburse')) {
             // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
             $data = $this->parseReimburseMessage($text);
-            $client = Gemini::client(config('gemini.api_key'));
-            $result = $client->generativeModel("models/gemini-2.5-flash")
-                ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
-                    mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
-                    data: base64_encode(Http::get($media)->body())
-                )])
-                ->text();
+            // $client = Gemini::client(config('gemini.api_key'));
+            // $result = $client->generativeModel("models/gemini-2.5-flash")
+            //     ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
+            //         mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
+            //         data: base64_encode(Http::get($media)->body())
+            //     )])
+            //     ->text();
+            $result = str_replace(['Rp', '.', ',','rp'], '', $data['amount']);
             if ($result != "0") {
                 $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
                 file_put_contents($tmp, Http::get($media)->body());
@@ -198,12 +199,13 @@ trait BotVolunteerTrait
 
     private function parseReimburseMessage(string $message): array
     {
-        preg_match_all('/^(Metode|Tujuan|Keterangan)\s*:\s*(.+)$/mi', $message, $matches);
+        preg_match_all('/^(Metode|Tujuan|Keterangan|Nominal)\s*:\s*(.+)$/mi', $message, $matches);
 
         return [
             'method' => $matches[2][array_search('Metode', $matches[1])] ?? null,
             'target' => $matches[2][array_search('Tujuan', $matches[1])] ?? null,
             'notes' => $matches[2][array_search('Keterangan', $matches[1])] ?? null,
+            'amount' => $matches[2][array_search('Nominal', $matches[1])] ?? null,
         ];
     }
 
