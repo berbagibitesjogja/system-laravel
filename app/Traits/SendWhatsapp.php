@@ -27,6 +27,7 @@ trait SendWhatsapp
             'target'  => $target,
             'message' => $message,
             'media'   => $media,
+            'asDocument' => false
         ]);
 
     }
