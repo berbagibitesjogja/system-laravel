@@ -42,15 +42,6 @@ trait BotVolunteerTrait
         $url = Storage::disk('public')->url($reimburse->file);
         $amount = "Rp " . number_format($reimburse->amount, 0, ',', '.');
         $this->send(
-            $user->phone,
-            "✅ *Pengajuan Reimburse Berhasil*\n\n"
-                . "💰 *Nominal* : Rp {$amount}\n"
-                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-                . "Pengajuan reimburse kamu sedang kami proses.\n"
-                . "Mohon ditunggu ya, terima kasih 🙏"
-        );
-
-        $this->send(
             AppConfiguration::getReimburseContact(),
             "📌 *PENGAJUAN REIMBURSE BARU*\n\n"
                 . "👤 *Nama* : {$user->name}\n"
@@ -63,6 +54,15 @@ trait BotVolunteerTrait
                 . "*Payment {$reimburse->id}*\n",
             $url
         );
+        $this->send(
+            $user->phone,
+            "✅ *Pengajuan Reimburse Berhasil*\n\n"
+                . "💰 *Nominal* : Rp {$amount}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Pengajuan reimburse kamu sedang kami proses.\n"
+                . "Mohon ditunggu ya, terima kasih 🙏"
+        );
+
     }
 
     protected function replyHero($sender, $message)
@@ -140,7 +140,7 @@ trait BotVolunteerTrait
             //         data: base64_encode(Http::get($media)->body())
             //     )])
             //     ->text();
-            $result = str_replace(['Rp', '.', ',','rp'], '', $data['amount']);
+            $result = str_replace(['Rp', '.', ',','rp'],'', $data['amount']);
             if ($result != "0") {
                 $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
                 file_put_contents($tmp, Http::get($media)->body());
