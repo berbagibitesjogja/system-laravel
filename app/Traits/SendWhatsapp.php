@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\AppConfiguration;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 trait SendWhatsapp
@@ -13,6 +14,11 @@ trait SendWhatsapp
         if (in_array($media, ['FIRST', 'SECOND'])) {
             $media = null;
         }
+        Log::info('Sending WhatsApp', [
+            'target' => $target,
+            'message' => $message,
+            'media'  => $media,
+        ]);
         $token = AppConfiguration::where('key', "FONNTE_FIRST")->first()->value;
         Http::withHeaders([
             'Authorization' => 'Bearer ' . $token,
