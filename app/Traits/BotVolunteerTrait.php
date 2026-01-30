@@ -56,6 +56,20 @@ trait BotVolunteerTrait
             $url
         );
         $this->send(
+            '6289512289613',
+            // AppConfiguration::getReimburseContact(),
+            "📌 *PENGAJUAN REIMBURSE BARU*\n\n"
+                . "👤 *Nama* : {$user->name}\n"
+                . "💰 *Nominal* : Rp {$amount}\n"
+                . "💳 *Metode* : {$reimburse->method}\n"
+                . "🎯 *Tujuan* : {$reimburse->target}\n\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "_Silakan lakukan pembayaran dan kirimkan bukti pembayaran_\n"
+                . "_dengan caption gambar:_\n"
+                . "*Payment {$reimburse->id}*\n",
+            $url
+        );
+        $this->send(
             $user->phone,
             "✅ *Pengajuan Reimburse Berhasil*\n\n"
                 . "💰 *Nominal* : Rp {$amount}\n"
@@ -172,19 +186,20 @@ trait BotVolunteerTrait
                 'payment',
                 new File($tmp)
                 );
-                $reimburse->update(['payment'=>$path,'done'=>true]);
-                $this->send(
-                    $reimburse->user->phone,
-                    "🎉 *Reimburse Telah Dibayarkan*\n\n"
-                    . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-                    . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-                    . "Dana reimburse sudah kami transfer.\n"
-                    . "Silakan cek dan terima kasih 🙏",
-                    $media
-            );
-
+            $reimburse->update(['payment'=>$path,'done'=>true]);
             $this->send(
-                AppConfiguration::getReimburseContact(),
+                $reimburse->user->phone,
+                "🎉 *Reimburse Telah Dibayarkan*\n\n"
+                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Dana reimburse sudah kami transfer.\n"
+                . "Silakan cek dan terima kasih 🙏",
+                $media
+                );
+                
+                $this->send(
+                '6285740297985',
+                // AppConfiguration::getReimburseContact(),
                 "✅ *REIMBURSE SELESAI*\n\n"
                 . "👤 *Nama* : {$reimburse->user->name}\n"
                 . "💰 *Nominal* : Rp {$reimburse->amount}\n"
@@ -194,11 +209,23 @@ trait BotVolunteerTrait
                 . "Status: *TELAH DIBAYARKAN*\n"
                 . "Terima kasih atas proses reimburse-nya 🙏"
                 );
+            $this->send(
+                '6289512289613',
+                "✅ *REIMBURSE SELESAI*\n\n"
+                . "👤 *Nama* : {$reimburse->user->name}\n"
+                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+                . "💳 *Metode* : {$reimburse->method}\n"
+                . "🎯 *Tujuan* : {$reimburse->target}\n"
+                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+                . "Status: *TELAH DIBAYARKAN*\n"
+                . "Terima kasih atas proses reimburse-nya 🙏"
+                , $media
+                );
+                
+                }
+                }
 
-        }
-    }
-
-    private function parseReimburseMessage(string $message): array
+                private function parseReimburseMessage(string $message): array
     {
         preg_match_all('/^(Metode|Tujuan|Keterangan|Nominal)\s*:\s*(.+)$/mi', $message, $matches);
 
