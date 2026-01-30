@@ -42,7 +42,8 @@ trait BotVolunteerTrait
         $url = Storage::disk('public')->url($reimburse->file);
         $amount = "Rp " . number_format($reimburse->amount, 0, ',', '.');
         $this->send(
-            AppConfiguration::getReimburseContact(),
+            '6285740297985',
+            // AppConfiguration::getReimburseContact(),
             "📌 *PENGAJUAN REIMBURSE BARU*\n\n"
                 . "👤 *Nama* : {$user->name}\n"
                 . "💰 *Nominal* : Rp {$amount}\n"
