@@ -26,10 +26,12 @@
                 Ajukan Reimburse
             </x-action-card> --}}
             
-            @if ($user->role=='super' || $user->division->name=='Friend')
-                {{-- <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
+            @if ($user->role=='super' || in_array($user->division->name,['Bendahara','Operational Manager']))
+                <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
                     Data Reimburse
-                </x-action-card> --}}
+                </x-action-card>
+            @endif
+            @if ($user->role=='super' || $user->division->name=='Friend')
                 <x-action-card href="{{ route('precence.index') }}" color="navy" icon="{{ asset('assets/people.svg') }}">
                     Presensi Volunteer
                 </x-action-card>

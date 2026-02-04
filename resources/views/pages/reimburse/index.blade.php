@@ -16,7 +16,8 @@
                     <x-th class="hidden sm:table-cell">Metode</x-th>
                     <x-th class="hidden sm:table-cell">Tujuan</x-th>
                     <x-th>Jumlah</x-th>
-                    <x-th class="hidden sm:table-cell">File</x-th>
+                    <x-th class="hidden sm:table-cell">Pengajuan</x-th>
+                    <x-th class="hidden sm:table-cell">Pembayaran</x-th>
                     <x-th>Status</x-th>
                     <x-th class="text-center">Aksi</x-th>
                 </x-slot:head>
@@ -39,6 +40,14 @@
                                     class="text-tosca-500 hover:text-tosca-600 font-medium transition-colors">
                                     📄 Lihat
                                 </a>
+                            </x-td>
+                            <x-td class="hidden sm:table-cell">
+                                @if ($item->payment)
+                                <a href="{{ asset('storage/' . $item->payment) }}" target="_blank"
+                                    class="text-tosca-500 hover:text-tosca-600 font-medium transition-colors">
+                                    📄 Bukti
+                                </a>
+                                @endif
                             </x-td>
                             <x-td>
                                 @if ($item->done == true)

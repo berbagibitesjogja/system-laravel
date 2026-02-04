@@ -63,7 +63,7 @@ class ReimburseController extends Controller
 
     public function destroy(Reimburse $reimburse)
     {
-        $this->send($reimburse->user->phone, "Reimburse ditolak", AppConfiguration::useWhatsapp());
+        $this->send($reimburse->user->phone, "Reimburse ditolak");
         Storage::disk('public')->delete($reimburse->file);
         $reimburse->delete();
         return back()->with("success", "Reimbursement canceled!");
@@ -71,7 +71,7 @@ class ReimburseController extends Controller
     public function update(Reimburse $reimburse)
     {
         $am = "Rp " . number_format($reimburse->amount, 0, ',', '.');
-        $this->send($reimburse->user->phone, "Reimburse sebesar {$am} telah diberikan", AppConfiguration::useWhatsapp());
+        $this->send($reimburse->user->phone, "Reimburse sebesar {$am} telah diberikan");
         $reimburse->update(["done" => true]);
         return back()->with("success", "Reimbursement success!");
     }
