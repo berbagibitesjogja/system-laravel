@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 
 trait BotVolunteerTrait
 {
-    use SendWhatsapp;
+    use SendWhatsapp, SendModel;
 
     protected function giveDocumentation($message)
     {
@@ -222,10 +222,13 @@ trait BotVolunteerTrait
                 , $media
                 );
                 
-                }
-                }
+        }else{
+            $reply = $this->askModel($text);
+            $this->send($sender, $reply);
+        }
+    }
 
-                private function parseReimburseMessage(string $message): array
+    private function parseReimburseMessage(string $message): array
     {
         preg_match_all('/^(Metode|Tujuan|Keterangan|Nominal)\s*:\s*(.+)$/mi', $message, $matches);
 
