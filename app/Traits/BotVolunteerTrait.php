@@ -224,7 +224,7 @@ trait BotVolunteerTrait
                 
         }else{
             $reply = $this->askModel($text);
-            $this->send($sender, $reply);
+            $this->send($volunteer->phone, $reply);
         }
     }
 
