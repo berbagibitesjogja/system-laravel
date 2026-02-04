@@ -11,11 +11,12 @@ use App\Traits\BotDonationTrait;
 use App\Traits\BotHeroTrait;
 use App\Traits\BotVolunteerTrait;
 use App\Traits\SendWhatsapp;
+use App\Traits\SendModel;
 use Illuminate\Support\Facades\Http;
 
 class BotController extends Controller
 {
-    use BotDonationTrait, BotHeroTrait, BotVolunteerTrait, SendWhatsapp;
+    use BotDonationTrait, BotHeroTrait, BotVolunteerTrait, SendWhatsapp, SendModel;
 
     public function fromFonnte()
     {
@@ -82,6 +83,8 @@ class BotController extends Controller
 
             $this->getReplyFromVolunteer($volunteer, $text, $media);
         }
+        $reply = $this->askModel($text);
+        $this->send($sender, $reply);
         return true;
     }
 
