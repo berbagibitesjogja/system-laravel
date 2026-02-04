@@ -12,7 +12,7 @@ trait SendModel
     protected function askModel($text)
     {
         $url = AppConfiguration::where('key', "MODEL_ENDPOINT")->first()->value;
-        $response = Http::post($url . '/chat', [
+        $response = Http::timeout(60)->post($url . '/chat', [
             'message' => $text,
         ]);
         $data = $response->json();

@@ -31,5 +31,6 @@ RUN composer install \
 RUN php artisan storage:link || true
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY php.ini /usr/local/etc/php/conf.d/custom.ini
 
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
