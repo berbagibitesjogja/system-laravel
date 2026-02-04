@@ -223,7 +223,17 @@ trait BotVolunteerTrait
                 );
                 
         }else{
-            $reply = $this->askModel($text);
+            $user = User::with('division:id,name')->find($volunteer->id);
+
+            $payload = [
+                'name' => $user->name,
+                'role' => $user->role,
+                'division' => $user->division->name
+            ];
+
+            $userJson = json_encode($payload, JSON_UNESCAPED_UNICODE);
+
+            $reply = $this->askModel("Saya adalah".$userJson."bertanya".$text);
             $this->send($volunteer->phone, $reply);
         }
     }
