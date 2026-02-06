@@ -16,17 +16,18 @@ class SendSurveyWhatsapp extends Command
 
     public function handle()
     {
-        $message = "Halo teman-teman! 👋\n\n"
-            . "Saya, Marina Hardiyanti, mahasiswa pada Doctoral Program of Food Science, Hungarian University of Agriculture and Life Science, Budapest, saat ini sedang melakukan survei dengan judul: “Survey of nutrition, food safety, and sensory aspects in the implementation of the food donation program”. Survei ini bertujuan untuk mengetahui pengetahuan dan persepsi masyarakat penerima makanan dan relawan pengelola program donasi makanan tentang aspek yang berkaitan dengan gizi, keamanan pangan, dan sensori pada program donasi makanan.\n\n"
-            . "Kami mengharapkan bantuan dan kesediaan teman-teman untuk berpartisipasi dalam pengisian survei ini.\n\n"
+        $message = "‼️*BBJ BUTUH PARTISIPASI KAMU*‼️\n\n"
+            . "Halo, Sobat BBJ ✨\n\n"
+            . "Saat ini Ibu Marina Hardiyanti selaku kontributor program BBJ sedang melaksanakan studi Doctoral Program of Food Science, Hungarian University of Agriculture and Life Science, Budapest. Beliau membuat “Survey of nutrition, food safety, and sensory aspects in the implementation of the food donation program” yang bertujuan untuk mengetahui pengetahuan dan persepsi masyarakat penerima makanan dan relawan pengelola program donasi makanan tentang aspek yang berkaitan dengan gizi, keamanan pangan, dan sensori pada program donasi makanan.\n\n"
+            . "Untuk mendukung program BBJ melalui penelitian beliau, MinJe mengharapkan bantuan dan kesediaan Sobat BBJ untuk berpartisipasi dalam pengisian survei ini nihh ✨\n\n"
             . "⏱️ Waktu pengisian sekitar 10-15 menit\n"
             . "📝 Seluruh jawaban bersifat anonim dan hanya digunakan untuk keperluan akademik.\n\n"
-            . "🔗 Link survei untuk teman-teman yang pernah/secara rutin menjadi penerima program donasi makanan:\n"
+            . "🔗 Link survei untuk Sobat BBJ yang pernah/secara rutin menjadi penerima program donasi makanan:\n"
             . "http://ugm.id/SurveyFoodHeroes\n\n"
-            . "🔗 Link survei untuk teman-teman yang pernah menjadi relawan pada organisasi/program donasi makanan:\n"
+            . "🔗 Link survei untuk Sobat BBJ yang pernah menjadi relawan pada organisasi/program donasi makanan:\n"
             . "http://ugm.id/SurveyVolunteer\n\n"
-            . "Teman-teman yang pernah menerima atau pun menjadi relawan dapat mengisi 2x pada form survei yang berbeda.\n\n"
-            . "Terima kasih atas waktu dan partisipasinya! Mudah-mudahan urusan teman-teman diberi kelancaran karena sudah membantu memudahkan jalan orang lain, dan semoga hasil survei ini nantinya dapat membawa manfaat bagi pengembangan ilmu pengetahuan✨";
+            . "Sobat BBJ yang pernah menerima ataupun menjadi relawan dapat mengisi 2x pada form survei yang berbeda.\n\n"
+            . "Terima kasih atas waktu dan  partisipasi Sobat BBJ! Mudah-mudahan urusan Sobat BBJ diberi kelancaran karena sudah membantu memudahkan jalan orang lain, dan semoga hasil survei ini nantinya dapat membawa manfaat bagi pengembangan ilmu pengetahuan✨";
 
         $heroPhones = DB::table('heroes')
             ->whereNotNull('phone')
