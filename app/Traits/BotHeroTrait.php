@@ -45,13 +45,20 @@ trait BotHeroTrait
         $name = $data[0];
         $email = $data[1];
         $phone = $data[2];
-        Notify::create(compact('name', 'email', 'phone'));
-        $this->send(
-            $sender,
-            "Terima kasih {$name}, verifikasi berhasil! 🎉\n\n" .
-                "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
-                "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊"
-        );
+        try {
+            Notify::create(compact('name', 'email', 'phone'));
+            $this->send(
+                $sender,
+                "Terima kasih {$name}, verifikasi berhasil! 🎉\n\n" .
+                    "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
+                    "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊"
+            );
+        } catch (\Throwable $th) {
+            $this->send(
+                $sender,
+                "Hai {$name}, kamu sebelumnya sudah terdaftar dan notifikasi akan kamu dapatkan ketika ada donasi, ditunggu yaa! 🎉"
+            );
+        }
     }
     protected function getReplyFromHeroes($hero, $text)
     {

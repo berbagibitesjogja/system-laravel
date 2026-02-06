@@ -78,13 +78,14 @@ class BotController extends Controller
             return $this->verifyNotify($sender, $text);
         }
         if ($hero) {
-            $this->getReplyFromHeroes($hero, $text);
+            return $this->getReplyFromHeroes($hero, $text);
         } elseif ($volunteer) {
 
-            $this->getReplyFromVolunteer($volunteer, $text, $media);
+            return $this->getReplyFromVolunteer($volunteer, $text, $media);
+        } else {
+            $reply = $this->askModel($text);
+            $this->send($sender, $reply);
         }
-        $reply = $this->askModel($text);
-        $this->send($sender, $reply);
         return true;
     }
 
@@ -97,11 +98,11 @@ class BotController extends Controller
         Http::withHeaders([
             'Authorization' => 'Bearer ' . $token,
         ])
-        ->post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
-            'target'  => $target,
-            'message' => $message,
-            'media'   => $media,
-        ]);
+            ->post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
+                'target'  => $target,
+                'message' => $message,
+                'media'   => $media,
+            ]);
     }
     // public static function sendForPublic($target, $message, $from = 'FIRST')
     // {
