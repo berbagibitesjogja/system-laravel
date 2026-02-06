@@ -38,7 +38,7 @@ class SendSurveyWhatsapp extends Command
 
         $targets = $heroPhones
             ->merge($userPhones)
-            ->map(fn ($phone) => $this->normalizeIndonesianPhoneTo62($phone))
+            ->map(fn($phone) => $this->normalizeIndonesianPhoneTo62($phone))
             ->filter()
             ->unique()
             ->values();
@@ -49,11 +49,13 @@ class SendSurveyWhatsapp extends Command
         }
 
         $this->info('Total target (unik, valid): ' . $targets->count());
-
+        $delay = 10;
         foreach ($targets as $phone) {
-            SendSurveyWhatsappMessage::dispatch($phone, $message);
-            $this->line('Queued: ' . $phone);
+            SendSurveyWhatsappMessage::dispatch($phone, $message)->delay(now()->addSeconds($delay));
+            $this->line('Queued: ' . $phone . 'After : ' . $delay . ' sec');
+            $delay += 10;
         }
+        $this->send('120363399651067268@g.us', 'Akan mengirimkan broadcast kepada ' . $targets->count() . ' dengan jeda ' . $delay . ' detik');
 
         return self::SUCCESS;
     }
