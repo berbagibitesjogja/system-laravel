@@ -19,7 +19,7 @@ class ReimburseController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->role=='super' || in_array($user->division->name,['Bendahara','Operational Manager'])) {
+        if ($user->role!=='super' || !in_array($user->division->name,['Bendahara','Operational Manager'])) {
             return back();
         }
         $reimburse = Reimburse::with('user')->latest()->get();
