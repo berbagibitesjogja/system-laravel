@@ -18,7 +18,7 @@ class ReimburseController extends Controller
     use SendWhatsapp, BotVolunteerTrait;
     public function index()
     {
-        if (Auth::user()->role != "super") {
+        if ($user->role=='super' || in_array($user->division->name,['Bendahara','Operational Manager'])) {
             return back();
         }
         $reimburse = Reimburse::with('user')->latest()->get();
