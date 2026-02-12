@@ -319,7 +319,7 @@
                     facultyGroup.classList.remove('hidden');
                     facultySelect.innerHTML = '<option value="">Memuat...</option>';
                     
-                    fetch(`/api/university/${this.value}/faculty`)
+                    fetch(`/app/api/university/${this.value}/faculty`)
                         .then(r => r.json())
                         .then(data => {
                             let options = '<option value="">Pilih Fakultas/Bagian...</option>';
