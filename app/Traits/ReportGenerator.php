@@ -58,7 +58,7 @@ trait ReportGenerator
         }
     }
 
-    public function generateMonthlyReportData($sponsor, $bulan, $year = null)
+    public static function generateMonthlyReportData($sponsor, $bulan, $year = null)
     {
         $year ??= now()->year;
         $months = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
