@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class VolunteerController extends Controller
 {
@@ -87,7 +88,7 @@ class VolunteerController extends Controller
             DB::beginTransaction();
             // User creation triggers Observer which handles availability generation
             $user = User::create($request->all());
-            
+
             DB::commit();
             return redirect()->route('volunteer.index')->with('success', 'Berhasil menambahkan volunteer');
         } catch (\Throwable $th) {
@@ -181,7 +182,11 @@ class VolunteerController extends Controller
 
     public function authenticate(Request $request)
     {
-        $user = Socialite::driver('google')->user();
+        try {
+            $user = Socialite::driver('google')->user();
+        } catch (InvalidStateException $e) {
+            $user = Socialite::driver('google')->stateless()->user();
+        }
         $volunteer = User::where('email', $user->email)->first();
         if (session('phone')) {
             $phone = session('phone');
@@ -211,7 +216,7 @@ class VolunteerController extends Controller
         $volunteer->name = $user->name;
         $volunteer->photo = $user->avatar;
         $volunteer->save();
-        
+
         if (session('job')) {
             $entry = session('entry');
             $jobId = session('job');
@@ -224,7 +229,7 @@ class VolunteerController extends Controller
             session()->forget(['unjob', 'entry']);
             return $this->handleJobUnapplication($volunteer, $entry, $jobId);
         }
-        
+
         Auth::login($volunteer);
         activity()
             ->causedBy($volunteer)
