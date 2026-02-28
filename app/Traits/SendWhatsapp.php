@@ -9,28 +9,28 @@ use Illuminate\Support\Facades\Storage;
 
 trait SendWhatsapp
 {
-    protected function send($target, $message, $media = null)
-    {
-        if (in_array($media, ['FIRST', 'SECOND'])) {
-            $media = null;
-        }
-        Log::info('Sending WhatsApp', [
-            'target' => $target,
-            'message' => $message,
-            'media'  => $media,
-        ]);
-        $token = AppConfiguration::where('key', "FONNTE_FIRST")->first()->value;
-        Http::withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])
-        ->post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
-            'target'  => $target,
-            'message' => $message,
-            'media'   => $media,
-            'asDocument' => false
-        ]);
+    // protected function send($target, $message, $media = null)
+    // {
+    //     if (in_array($media, ['FIRST', 'SECOND'])) {
+    //         $media = null;
+    //     }
+    //     Log::info('Sending WhatsApp', [
+    //         'target' => $target,
+    //         'message' => $message,
+    //         'media'  => $media,
+    //     ]);
+    //     $token = AppConfiguration::where('key', "FONNTE_FIRST")->first()->value;
+    //     Http::withHeaders([
+    //         'Authorization' => 'Bearer ' . $token,
+    //     ])
+    //     ->post(AppConfiguration::getWhatsAppEndpoint() . '/send', [
+    //         'target'  => $target,
+    //         'message' => $message,
+    //         'media'   => $media,
+    //         'asDocument' => false
+    //     ]);
 
-    }
+    // }
     protected function handleMedia(string $url)
     {
         $path = parse_url($url, PHP_URL_PATH);
@@ -41,35 +41,35 @@ trait SendWhatsapp
         }
     }
 
-    // public static function send($target, $message, $media = null)
-    // {
-    //     $curl = curl_init();
-    //     $token = AppConfiguration::where('key', "FONNTE_FIRST")->first()->value;
-    //     curl_setopt_array($curl, [
-    //         CURLOPT_URL => 'https://api.fonnte.com/send',
-    //         CURLOPT_RETURNTRANSFER => true,
-    //         CURLOPT_ENCODING => '',
-    //         CURLOPT_MAXREDIRS => 10,
-    //         CURLOPT_TIMEOUT => 0,
-    //         CURLOPT_FOLLOWLOCATION => true,
-    //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //         CURLOPT_CUSTOMREQUEST => 'POST',
-    //         CURLOPT_POSTFIELDS => [
-    //             'target' => $target,
-    //             'message' => $message,
-    //             'schedule' => 0,
-    //             'typing' => false,
-    //             'delay' => '2',
-    //             'countryCode' => '62',
-    //         ],
-    //         CURLOPT_HTTPHEADER => [
-    //             'Authorization: ' . $token,
-    //         ],
-    //     ]);
+    public static function send($target, $message, $media = null)
+    {
+        $curl = curl_init();
+        $token = AppConfiguration::where('key', "FONNTE_FIRST")->first()->value;
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.fonnte.com/send',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => [
+                'target' => $target,
+                'message' => $message,
+                'schedule' => 0,
+                'typing' => false,
+                'delay' => '2',
+                'countryCode' => '62',
+            ],
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . $token,
+            ],
+        ]);
 
-    //     curl_exec($curl);
-    //     curl_close($curl);
-    // }
+        curl_exec($curl);
+        curl_close($curl);
+    }
     protected function mentionAll($target)
     {
 

@@ -77,7 +77,6 @@ trait BotVolunteerTrait
                 . "Pengajuan reimburse kamu sedang kami proses.\n"
                 . "Mohon ditunggu ya, terima kasih 🙏"
         );
-
     }
 
     protected function replyHero($sender, $message)
@@ -143,11 +142,11 @@ trait BotVolunteerTrait
     protected function getReplyFromVolunteer($volunteer, $text, $media)
     {
         if (strtolower($text) == 'reimburse') {
-            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            $this->send($volunteer->phone,"Reimburse\nNominal : ex. 100.000\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk\n\n*nominal tanpa Rp ataupun koma, hanya . sebagai pemisah 0");
+            $this->send($volunteer->phone, 'Maaf sedang perbaikan, silahkan hubungi tim IT');
+            // $this->send($volunteer->phone,"Reimburse\nNominal : ex. 100.000\nMetode : ex. BCA\nTujuan : ex.12345\nKeterangan : ex. Beli truk\n\n*nominal tanpa Rp ataupun koma, hanya . sebagai pemisah 0");
         } elseif (str_starts_with($text, 'Reimburse')) {
-            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-            $data = $this->parseReimburseMessage($text);
+            $this->send($volunteer->phone, 'Maaf sedang perbaikan, silahkan hubungi tim IT');
+            // $data = $this->parseReimburseMessage($text);
             // $client = Gemini::client(config('gemini.api_key'));
             // $result = $client->generativeModel("models/gemini-2.5-flash")
             //     ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
@@ -155,74 +154,74 @@ trait BotVolunteerTrait
             //         data: base64_encode(Http::get($media)->body())
             //     )])
             //     ->text();
-            $result = str_replace(['Rp', '.', ',','rp'],'', $data['amount']);
-            if ($result != "0") {
-                $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
-                file_put_contents($tmp, Http::get($media)->body());
+            // $result = str_replace(['Rp', '.', ',','rp'],'', $data['amount']);
+            // if ($result != "0") {
+            //     $tmp = tempnam(sys_get_temp_dir(), 'reimburse_');
+            //     file_put_contents($tmp, Http::get($media)->body());
 
-                $path = Storage::disk('public')->putFile(
-                    'reimburse',
-                    new File($tmp)
-                );
+            //     $path = Storage::disk('public')->putFile(
+            //         'reimburse',
+            //         new File($tmp)
+            //     );
 
-                $reimburse = Reimburse::create([
-                    'amount' => (int) $result,
-                    'user_id' => $volunteer->id,
-                    'file' => $path,
-                    'method' => $data['method'],
-                    'target' => $data['target'],
-                    'notes' => $data['notes'],
-                ]);
-                $this->createReimburse($volunteer, $reimburse);
-            }
+            //     $reimburse = Reimburse::create([
+            //         'amount' => (int) $result,
+            //         'user_id' => $volunteer->id,
+            //         'file' => $path,
+            //         'method' => $data['method'],
+            //         'target' => $data['target'],
+            //         'notes' => $data['notes'],
+            //     ]);
+            //     $this->createReimburse($volunteer, $reimburse);
+            // }
         } elseif (str_starts_with($text, 'Payment')) {
-            // $this->send($volunteer->phone, 'Maaf sedang perbaikan');
-                        $code = str_replace('Payment ','',$text);
-                        $reimburse = Reimburse::find($code);
-            $tmp = tempnam(sys_get_temp_dir(), 'payment_');
-            file_put_contents($tmp, Http::get($media)->body());
+            $this->send($volunteer->phone, 'Maaf sedang perbaikan, silahkan hubungi tim IT');
+            $code = str_replace('Payment ', '', $text);
+            $reimburse = Reimburse::find($code);
+            // $tmp = tempnam(sys_get_temp_dir(), 'payment_');
+            // file_put_contents($tmp, Http::get($media)->body());
 
-            $path = Storage::disk('public')->putFile(
-                'payment',
-                new File($tmp)
-                );
-            $reimburse->update(['payment'=>$path,'done'=>true]);
-            $this->send(
-                $reimburse->user->phone,
-                "🎉 *Reimburse Telah Dibayarkan*\n\n"
-                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-                . "Dana reimburse sudah kami transfer.\n"
-                . "Silakan cek dan terima kasih 🙏",
-                $media
-                );
-                
-                $this->send(
-                '6285740297985',
-                // AppConfiguration::getReimburseContact(),
-                "✅ *REIMBURSE SELESAI*\n\n"
-                . "👤 *Nama* : {$reimburse->user->name}\n"
-                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-                . "💳 *Metode* : {$reimburse->method}\n"
-                . "🎯 *Tujuan* : {$reimburse->target}\n"
-                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-                . "Status: *TELAH DIBAYARKAN*\n"
-                . "Terima kasih atas proses reimburse-nya 🙏"
-                );
-            $this->send(
-                '6289512289613',
-                "✅ *REIMBURSE SELESAI*\n\n"
-                . "👤 *Nama* : {$reimburse->user->name}\n"
-                . "💰 *Nominal* : Rp {$reimburse->amount}\n"
-                . "💳 *Metode* : {$reimburse->method}\n"
-                . "🎯 *Tujuan* : {$reimburse->target}\n"
-                . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
-                . "Status: *TELAH DIBAYARKAN*\n"
-                . "Terima kasih atas proses reimburse-nya 🙏"
-                , $media
-                );
-                
-        }else{
+            // $path = Storage::disk('public')->putFile(
+            //     'payment',
+            //     new File($tmp)
+            //     );
+            // $reimburse->update(['payment'=>$path,'done'=>true]);
+            // $this->send(
+            //     $reimburse->user->phone,
+            //     "🎉 *Reimburse Telah Dibayarkan*\n\n"
+            //     . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+            //     . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+            //     . "Dana reimburse sudah kami transfer.\n"
+            //     . "Silakan cek dan terima kasih 🙏",
+            //     $media
+            //     );
+
+            //     $this->send(
+            //     '6285740297985',
+            //     // AppConfiguration::getReimburseContact(),
+            //     "✅ *REIMBURSE SELESAI*\n\n"
+            //     . "👤 *Nama* : {$reimburse->user->name}\n"
+            //     . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+            //     . "💳 *Metode* : {$reimburse->method}\n"
+            //     . "🎯 *Tujuan* : {$reimburse->target}\n"
+            //     . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+            //     . "Status: *TELAH DIBAYARKAN*\n"
+            //     . "Terima kasih atas proses reimburse-nya 🙏"
+            //     );
+            // $this->send(
+            //     '6289512289613',
+            //     "✅ *REIMBURSE SELESAI*\n\n"
+            //     . "👤 *Nama* : {$reimburse->user->name}\n"
+            //     . "💰 *Nominal* : Rp {$reimburse->amount}\n"
+            //     . "💳 *Metode* : {$reimburse->method}\n"
+            //     . "🎯 *Tujuan* : {$reimburse->target}\n"
+            //     . "🧾 *Kode Reimburse* : {$reimburse->id}\n\n"
+            //     . "Status: *TELAH DIBAYARKAN*\n"
+            //     . "Terima kasih atas proses reimburse-nya 🙏"
+            //     , $media
+            //     );
+
+        } else {
             $user = User::with('division:id,name')->find($volunteer->id);
 
             $payload = [
@@ -233,7 +232,7 @@ trait BotVolunteerTrait
 
             $userJson = json_encode($payload, JSON_UNESCAPED_UNICODE);
 
-            $reply = $this->askModel("Saya adalah".$userJson."bertanya".$text);
+            $reply = $this->askModel("Saya adalah" . $userJson . "bertanya" . $text);
             $this->send($volunteer->phone, $reply);
         }
     }
