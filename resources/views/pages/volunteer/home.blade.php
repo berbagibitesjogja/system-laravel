@@ -22,9 +22,9 @@
             Aksi Cepat
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {{-- <x-action-card href="{{ route('reimburse.create') }}" color="orange" icon="{{ asset('assets/donate.svg') }}">
+            <x-action-card href="{{ route('reimburse.create') }}" color="orange" icon="{{ asset('assets/donate.svg') }}">
                 Ajukan Reimburse
-            </x-action-card> --}}
+            </x-action-card>
             
             @if ($user->role=='super' || in_array($user->division->name,['Bendahara','Operational Manager']))
                 <x-action-card href="{{ route('reimburse.index') }}" color="tosca" icon="{{ asset('assets/food.svg') }}">
