@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('container')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     @if (array_keys(request()->query())[0] == 'download')
         <div class="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
             <div class="bg-white p-8 rounded-3xl shadow-xl border border-navy-50 max-w-sm w-full animate-fade-in-up">
@@ -36,7 +36,7 @@
             });
             setTimeout(() => { window.history.back() }, 2000);
         </script>
-    
+
     @elseif (array_keys(request()->query())[0] == 'view')
         <div class="flex flex-col items-center justify-center p-8">
             <div class="bg-white p-6 rounded-3xl shadow-xl border border-navy-100">
@@ -118,7 +118,7 @@
             })
 
             function sendData(data) {
-                fetch('/abcence/distance', {
+                fetch('app/abcence/distance', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -158,7 +158,7 @@
                      <p class="text-white/80 text-sm">Arahkan kamera ke QR Code presensi</p>
                 </div>
             </div>
-            
+
             <div class="bg-navy-900 p-6 flex flex-col items-center gap-4 rounded-t-3xl -mt-6 relative z-10">
                 <div id="loading" class="hidden flex items-center gap-3 text-white">
                     <svg class="w-5 h-5 animate-spin text-tosca-400" fill="none" viewBox="0 0 24 24">
@@ -167,7 +167,7 @@
                     </svg>
                     <span>Memproses...</span>
                 </div>
-                
+
                 <div id="success" class="hidden text-green-400 font-bold flex items-center gap-2">
                     ✅ <span>Berhasil! Mengalihkan...</span>
                 </div>
@@ -186,7 +186,7 @@
             import QrScanner from 'https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/+esm'
             let userLat = 0;
             let userLong = 0;
-            
+
             navigator.geolocation.getCurrentPosition(
                 res => {
                     userLat = res.coords.latitude
@@ -201,15 +201,15 @@
                 (result) => {
                     document.querySelector('#loading').classList.remove('hidden')
                     qrScanner.stop()
-                    
+
                     try {
                         let scanned = result.data;
                         const startIndex = scanned.indexOf('datat=') + 6
                         if(startIndex < 6) throw new Error("Invalid QR");
-                        
+
                         scanned = scanned.substring(startIndex)
                         scanned = scanned.split('!')
-                        
+
                         const data = {
                             precenceLat: scanned[0],
                             precenceCode: scanned[1],
@@ -217,8 +217,8 @@
                             userLat: userLat,
                             userLong: userLong
                         }
-                        
-                        fetch('/abcence/distance', {
+
+                        fetch('app/abcence/distance', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
