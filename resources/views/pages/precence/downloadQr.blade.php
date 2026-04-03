@@ -120,6 +120,7 @@
             function sendData(data) {
                 fetch('/app/abcence/distance', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -220,6 +221,7 @@
 
                         fetch('/app/abcence/distance', {
                             method: 'POST',
+                            credentials: 'same-origin',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
