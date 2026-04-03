@@ -118,7 +118,7 @@
             })
 
             function sendData(data) {
-                fetch('app/abcence/distance', {
+                fetch('/app/abcence/distance', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -218,7 +218,7 @@
                             userLong: userLong
                         }
 
-                        fetch('app/abcence/distance', {
+                        fetch('/app/abcence/distance', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
