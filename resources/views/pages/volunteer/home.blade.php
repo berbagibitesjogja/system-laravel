@@ -44,7 +44,7 @@
             @endif
             
             @if ($precence==1)
-                <x-action-card href="{{ route('precence.qr', 'scan') }}" color="tosca" icon="{{ asset('assets/people.svg') }}">
+                <x-action-card href="{{ route('precence.qr') }}" color="tosca" icon="{{ asset('assets/people.svg') }}">
                     Scan QR Presensi
                 </x-action-card>
             @endif

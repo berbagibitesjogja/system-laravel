@@ -28,7 +28,7 @@ Route::get('auth/google', function () {
     return Socialite::driver('google')->redirect();
 })->name('auth.google');
 
-Route::post('abcence/distance', [PrecenceController::class, 'userAttendance']);
+Route::post('abcence/distance', [PrecenceController::class, 'userAttendance'])->name('abcence.distance');
 Route::redirect('home', '');
 
 Route::controller(VolunteerController::class)->group(function () {

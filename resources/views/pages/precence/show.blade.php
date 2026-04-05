@@ -4,7 +4,7 @@
         <x-btn-link href="{{ route('precence.index') }}" variant="ghost">
             ← Kembali
         </x-btn-link>
-        <x-btn-link href="{{ route('precence.qr', $precence->id) }}" variant="navy">
+        <x-btn-link href="{{ route('precence.qr', ['download' => 1]) }}" variant="navy">
             📥 Download QR
         </x-btn-link>
     </div>

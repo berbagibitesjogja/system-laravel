@@ -9,10 +9,10 @@
                 + Tambah Presensi
             </x-btn-link>
         @else
-            <x-btn-link href="{{ route('precence.qr', 'download') }}" variant="info">
+            <x-btn-link href="{{ route('precence.qr', ['download' => 1]) }}" variant="info">
                 📥 Download QR Code
             </x-btn-link>
-            <x-btn-link href="{{ route('precence.qr', 'view') }}" variant="navy">
+            <x-btn-link href="{{ route('precence.qr', ['view' => 1]) }}" variant="navy">
                 👁 Lihat QR Code
             </x-btn-link>
         @endif

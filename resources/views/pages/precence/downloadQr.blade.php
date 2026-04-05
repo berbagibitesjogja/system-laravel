@@ -2,7 +2,7 @@
 @section('container')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if (array_keys(request()->query())[0] == 'download')
+    @if (request()->has('download'))
         <div class="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
             <div class="bg-white p-8 rounded-3xl shadow-xl border border-navy-50 max-w-sm w-full animate-fade-in-up">
                 <div class="w-20 h-20 bg-tosca-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -37,7 +37,7 @@
             setTimeout(() => { window.history.back() }, 2000);
         </script>
 
-    @elseif (array_keys(request()->query())[0] == 'view')
+    @elseif (request()->has('view'))
         <div class="flex flex-col items-center justify-center p-8">
             <div class="bg-white p-6 rounded-3xl shadow-xl border border-navy-100">
                 <div id="canvas" class="flex justify-center"></div>
@@ -64,7 +64,7 @@
             qrCode.append(document.getElementById("canvas"));
         </script>
 
-    @elseif (array_keys(request()->query())[0] == 'datat')
+    @elseif (request()->has('datat'))
         <div class="min-h-[500px] flex flex-col items-center justify-center text-center p-8">
             {{-- Loading State --}}
             <div id="loading" class="animate-fade-in-up">
@@ -103,6 +103,8 @@
 
         <script type="module">
             import QrScanner from 'https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/+esm'
+            const distanceUrl = @json(route('abcence.distance', [], false));
+            const homeUrl = @json(url('/'));
             let userLat;
             let userLong;
             navigator.geolocation.getCurrentPosition(res => {
@@ -118,7 +120,7 @@
             })
 
             function sendData(data) {
-                fetch('/app/abcence/distance', {
+                fetch(distanceUrl, {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
@@ -133,10 +135,10 @@
                         document.querySelector('#failed').classList.remove('hidden')
                     } else {
                         document.querySelector('#success').classList.remove('hidden')
+                        setTimeout(() => {
+                            window.location.href = homeUrl
+                        }, 1500)
                     }
-                    setTimeout(() => {
-                        window.location.href = `{{ env('APP_URL', 'https://app.berbagibitesjogja.site') }}`
-                    }, 1500)
                 })
             }
         </script>
@@ -185,6 +187,8 @@
 
         <script type="module">
             import QrScanner from 'https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/+esm'
+            const distanceUrl = @json(route('abcence.distance', [], false));
+            const homeUrl = @json(url('/'));
             let userLat = 0;
             let userLong = 0;
 
@@ -219,7 +223,7 @@
                             userLong: userLong
                         }
 
-                        fetch('/app/abcence/distance', {
+                        fetch(distanceUrl, {
                             method: 'POST',
                             credentials: 'same-origin',
                             headers: {
@@ -236,7 +240,7 @@
                             } else {
                                 document.querySelector('#success').classList.remove('hidden')
                                 setTimeout(() => {
-                                    window.location.href = `{{ env('APP_URL', 'https://app.berbagibitesjogja.site') }}`
+                                    window.location.href = homeUrl
                                 }, 1500)
                             }
                         })
