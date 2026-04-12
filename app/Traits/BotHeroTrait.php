@@ -28,7 +28,13 @@ trait BotHeroTrait
                 "📅 Tanggal: " . Carbon::parse($hero->donation->take)->format('d F Y') . "\n" .
                 "⏰ Waktu: " . str_pad($hero->donation->hour, 2, '0', STR_PAD_LEFT) . ":" . str_pad($hero->donation->minute, 2, '0', STR_PAD_LEFT) . "\n" .
                 "📍 Lokasi: {$hero->donation->location}\n" .
-                "🗺️ Maps: {$hero->donation->maps}\n\n" .
+                "🗺️ Maps: {$hero->donation->maps}\n\n";
+
+            if (!empty($hero->donation->message)) {
+                $message .= "📝 *Pesan Khusus:* {$hero->donation->message}\n\n";
+            }
+
+            $message .=
                 "Harap tunjukkan kode ini saat pengambilan ya. Semoga bermanfaat dan tidak terbuang 🌿💚\n\n" .
                 "_Pesan otomatis dari bot BBJ 🤖_";
 
