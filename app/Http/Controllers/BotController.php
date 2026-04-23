@@ -13,6 +13,7 @@ use App\Traits\BotVolunteerTrait;
 use App\Traits\SendWhatsapp;
 use App\Traits\SendModel;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class BotController extends Controller
 {
@@ -31,6 +32,13 @@ class BotController extends Controller
         //         $this->handleMedia($media);
         //     });
         // }
+
+        //log sementara
+        Log::info('Fonnte Webhook Incoming', [
+            'raw' => $json,
+            'parsed' => $data,
+        ]);
+
         if ($message == '@BOT status') {
             $this->getStatus($sender, $message);
         }
