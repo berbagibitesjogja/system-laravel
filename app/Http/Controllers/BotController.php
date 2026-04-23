@@ -37,6 +37,9 @@ class BotController extends Controller
         Log::info('Fonnte Webhook Incoming', [
             'raw' => $json,
             'parsed' => $data,
+            'sender' => $sender,
+            'message' => $message,
+            'media' => $media,
         ]);
 
         if ($message == '@BOT status') {
