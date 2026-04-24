@@ -205,7 +205,7 @@ class VolunteerController extends Controller
                         "Aku ingin mengaktifkan fitur *Dapatkan Notifikasi* untuk info donasi BBJ.\n\n" .
                         "Kode Verifikasi: _{$code}_"
                 );
-                return redirect("https://wa.me/6285117773642?text={$text}");
+                return redirect("https://wa.me/6285111398765?text={$text}");
             } catch (\Throwable $th) {
                 return redirect()->route('volunteer.home')->with('error', 'Anda sudah terdaftar');
             }

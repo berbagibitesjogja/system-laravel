@@ -31,10 +31,10 @@
                         <div class="w-20 h-20 bg-lime-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <span class="text-4xl">🎉</span>
                         </div>
-                        
+
                         <h3 class="text-2xl font-bold text-navy-900 mb-2">Terima Kasih Heroes!</h3>
                         <p class="text-navy-500 mb-6">Kamu telah terdaftar untuk aksi hari ini.</p>
-                        
+
                         @if ($donation->message)
                             <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-sm text-yellow-800">
                                 "{{ $donation->message }}"
@@ -46,13 +46,13 @@
                             <p class="text-sm text-navy-400 mb-4">
                                 Kirim pesan ke bot kami untuk mendapatkan kode penukaran makanan.
                             </p>
-                            
-                            <a href="https://wa.me/6285117773642?text={{ rawurlencode("> Verify\n\nHalo Minje! 👋\nAku mau konfirmasi pendaftaran sebagai Food Heroes.\n\n*Signature* _" . session('code') . '_') }}" 
+
+                            <a href="https://wa.me/6285111398765?text={{ rawurlencode("> Verify\n\nHalo Minje! 👋\nAku mau konfirmasi pendaftaran sebagai Food Heroes.\n\n*Signature* _" . session('code') . '_') }}"
                                class="block w-full bg-navy-600 hover:bg-navy-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transform transition hover:-translate-y-0.5">
                                 🚀 Verifikasi Sekarang
                             </a>
-                            
-                            <a href="{{ route('hero.cancel') }}" 
+
+                            <a href="{{ route('hero.cancel') }}"
                                class="block w-full text-red-500 font-medium py-2 hover:text-red-700 text-sm transition-colors">
                                 Batalkan Pendaftaran
                             </a>
@@ -100,12 +100,12 @@
                     {{-- Cards --}}
                     <div class="relative min-h-[500px]">
                         @foreach ($donations as $id => $donation)
-                            <div x-show="activeTab === {{ $id }}" 
+                            <div x-show="activeTab === {{ $id }}"
                                  x-transition:enter="transition ease-out duration-300"
                                  x-transition:enter-start="opacity-0 translate-y-4"
                                  x-transition:enter-end="opacity-100 translate-y-0"
                                  class="absolute w-full top-0 left-0">
-                                
+
                                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-navy-50">
                                     <div class="bg-gradient-to-r from-navy-500 to-tosca-600 p-8 text-center text-white relative">
                                         <div class="absolute top-0 right-0 p-4 opacity-20">
@@ -132,7 +132,7 @@
                                             <form action="{{ route('hero.store') }}" method="POST" id="bbjForm{{ $id }}" class="space-y-5">
                                                 @csrf
                                                 <input type="hidden" name="donation" value="{{ $donation->id }}">
-                                                
+
                                                 <div class="form-group">
                                                     <label class="block text-xs font-bold text-navy-400 uppercase mb-2">Asal</label>
                                                     <div class="relative">
@@ -158,7 +158,7 @@
 
                                                 <div class="form-group">
                                                     <label class="block text-xs font-bold text-navy-400 uppercase mb-2">Nama Lengkap</label>
-                                                    <input type="text" name="name" 
+                                                    <input type="text" name="name"
                                                            class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border-gray-200 text-navy-900 font-medium placeholder:text-gray-400 focus:ring-2 focus:ring-tosca-500 focus:border-transparent transition-shadow outline-none"
                                                            placeholder="Masukkan nama lengkap..." required>
                                                 </div>
@@ -167,7 +167,7 @@
                                                     <label class="block text-xs font-bold text-navy-400 uppercase mb-2">WhatsApp</label>
                                                     <div class="relative">
                                                         <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-navy-500">+62</span>
-                                                        <input type="tel" name="phone" 
+                                                        <input type="tel" name="phone"
                                                                class="w-full pl-14 pr-4 py-3.5 rounded-xl bg-gray-50 border-gray-200 text-navy-900 font-medium placeholder:text-gray-400 focus:ring-2 focus:ring-tosca-500 focus:border-transparent transition-shadow outline-none"
                                                                placeholder="812345678" required>
                                                     </div>
@@ -190,7 +190,7 @@
                                                 </div>
                                                 <h3 class="text-lg font-bold text-navy-900 mb-2">Kuota Terpenuhi</h3>
                                                 <p class="text-navy-400 text-sm mb-6">Jangan sedih! Masih ada kesempatan lain kali.</p>
-                                                
+
                                                 <a href="{{ route('notify.form') }}" class="inline-flex items-center justify-center px-6 py-3 border border-navy-200 rounded-xl text-navy-700 font-semibold hover:bg-navy-50 transition-colors">
                                                     🔔 Ingatkan Saya Nanti
                                                 </a>
@@ -214,7 +214,7 @@
                 </div>
                 <h2 class="text-2xl font-bold text-navy-900 mb-3">Belum Ada Aksi Hari Ini</h2>
                 <p class="text-navy-500 mb-8 max-w-xs mx-auto">Kami sedang mempersiapkan makanan lezat untuk diselamatkan. Cek lagi nanti ya!</p>
-                
+
                 <a href="{{ route('notify.form') }}" class="inline-block bg-tosca-500 hover:bg-tosca-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-tosca-200 transition-all transform hover:-translate-y-1">
                     🔔 Beritahu Saya Jika Ada
                 </a>
@@ -253,10 +253,10 @@
     {{-- Modal Component --}}
     <div x-data="{ open: false, formId: null }"
          @open-modal.window="open = true; formId = $event.detail.formId"
-         x-show="open" 
+         x-show="open"
          class="fixed inset-0 z-50 flex items-center justify-center px-4" style="display: none;">
-        
-        <div x-show="open" 
+
+        <div x-show="open"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -273,7 +273,7 @@
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 translate-y-4"
              class="bg-white rounded-3xl shadow-2xl max-w-sm w-full relative z-10 overflow-hidden">
-            
+
             <div class="bg-orange-500 p-6 text-white text-center">
                 <div class="text-4xl mb-2">⚠️</div>
                 <h3 class="text-xl font-bold">Komitmen Heroes</h3>
@@ -314,11 +314,11 @@
                 const form = this.closest('form');
                 const facultyGroup = form.querySelector('.faculty-group');
                 const facultySelect = form.querySelector('.faculty-select');
-                
+
                 if (this.value) {
                     facultyGroup.classList.remove('hidden');
                     facultySelect.innerHTML = '<option value="">Memuat...</option>';
-                    
+
                     fetch(`/app/api/university/${this.value}/faculty`)
                         .then(r => r.json())
                         .then(data => {
