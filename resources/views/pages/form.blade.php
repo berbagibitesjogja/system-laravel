@@ -47,7 +47,7 @@
                                 Kirim pesan ke bot kami untuk mendapatkan kode penukaran makanan.
                             </p>
 
-                            <a href="https://wa.me/6285111398765?text={{ rawurlencode("> Verify\n\nHalo Minje! 👋\nAku mau konfirmasi pendaftaran sebagai Food Heroes.\n\n*Signature* _" . session('code') . '_') }}"
+                            <a href="https://wa.me/{{ $botNumber }}?text={{ rawurlencode("> Verify\n\nHalo Minje! 👋\nAku mau konfirmasi pendaftaran sebagai Food Heroes.\n\n*Signature* _" . session('code') . '_') }}"
                                class="block w-full bg-navy-600 hover:bg-navy-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transform transition hover:-translate-y-0.5">
                                 🚀 Verifikasi Sekarang
                             </a>

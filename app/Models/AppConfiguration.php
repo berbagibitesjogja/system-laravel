@@ -30,4 +30,9 @@ class AppConfiguration extends Model
         $code = AppConfiguration::where('key', 'GROUP_WA')->first();
         return $code->value;
     }
+    public static function getBotNumber()
+    {
+        $botNumber = AppConfiguration::where('key', 'BOT_NUMBER')->first();
+        return $botNumber->value;
+    }
 }

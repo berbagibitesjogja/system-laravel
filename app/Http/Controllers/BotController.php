@@ -156,4 +156,10 @@ class BotController extends Controller
         curl_exec($curl);
         curl_close($curl);
     }
+
+    public function getBotNumber()
+    {
+        $botNumber = AppConfiguration::getBotNumber();
+        return response()->json(['bot_number' => $botNumber], 200);
+    }
 }

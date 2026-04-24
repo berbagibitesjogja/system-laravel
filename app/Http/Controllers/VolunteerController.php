@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVolunteerRequest;
+use App\Models\AppConfiguration;
 use App\Models\Donation\Donation;
 use App\Models\Donation\Food;
 use App\Models\Donation\Sponsor;
@@ -192,6 +193,8 @@ class VolunteerController extends Controller
             $phone = session('phone');
             session()->forget('phone');
 
+            $botNumber = AppConfiguration::getBotNumber();
+
             if (! str_ends_with($user->email, 'mail.ugm.ac.id')) {
                 return redirect()->route('volunteer.home')->with('error', 'Email tidak valid');
             }
@@ -205,7 +208,7 @@ class VolunteerController extends Controller
                         "Aku ingin mengaktifkan fitur *Dapatkan Notifikasi* untuk info donasi BBJ.\n\n" .
                         "Kode Verifikasi: _{$code}_"
                 );
-                return redirect("https://wa.me/6285111398765?text={$text}");
+                return redirect("https://wa.me/{$botNumber}?text={$text}");
             } catch (\Throwable $th) {
                 return redirect()->route('volunteer.home')->with('error', 'Anda sudah terdaftar');
             }

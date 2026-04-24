@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHeroRequest;
+use App\Models\AppConfiguration;
 use App\Models\Donation\Donation;
 use App\Models\Donation\Food;
 use App\Models\Heroes\Backup;
@@ -20,7 +21,7 @@ use Illuminate\Routing\Controllers\Middleware;
 class HeroController extends Controller implements HasMiddleware
 {
     use TwoWayEncryption, DashboardAnalytics;
-    
+
     public static function middleware(): array
     {
         return [
@@ -66,8 +67,9 @@ class HeroController extends Controller implements HasMiddleware
         $heroes = Hero::all()->sum('quantity');
 
         $lastData = $this->getDonationAnalytics(5); // HeroController used 5 months back
+        $botNumber = AppConfiguration::getBotNumber();
 
-        return view('pages.form', compact('donations', 'donations_sum', 'foods', 'heroes', 'lastData'));
+        return view('pages.form', compact('donations', 'donations_sum', 'foods', 'heroes', 'lastData', 'botNumber'));
     }
 
     public function contributor(Request $request)
@@ -86,8 +88,8 @@ class HeroController extends Controller implements HasMiddleware
             ]);
             // Remain update handled by Observer
 
-            $donation->save(); 
-            
+            $donation->save();
+
             return back()->with('success', 'Berhasil menambahkan kontributor');
         } catch (\Throwable $th) {
             return back()->with('error', 'Gagal menambahkan kontributor');
@@ -97,9 +99,9 @@ class HeroController extends Controller implements HasMiddleware
     public function store(StoreHeroRequest $request)
     {
         // Validation handled by FormRequest
-        
+
         $code = $this->generate();
-        
+
         Hero::create([
             'name' => $request['name'],
             'phone' => '62' . $request['phone'], // Prefix added
@@ -110,9 +112,9 @@ class HeroController extends Controller implements HasMiddleware
             // Quantity defaults to 1? Not specified in original code, so implicit in DB or null.
             // Observer handles decrement using `quantity ?? 1`.
         ]);
-        
+
         // Remain update handled by Observer.
-        
+
         $donation = Donation::find($request['donation']); // Reload to get fresh state? Or just trust observer.
         session(['donation' => $donation->id]);
         session(['code' => $this->encryptData($request['name'])]);
@@ -142,7 +144,7 @@ class HeroController extends Controller implements HasMiddleware
             'donation_id' => $hero->donation_id,
             'code' => $hero->code,
         ]);
-        
+
         $hero->delete();
 
         return back()->with('success', 'Hero batal mengambil');
@@ -175,11 +177,11 @@ class HeroController extends Controller implements HasMiddleware
         // Observer 'deleted' will increment donation remain.
         // Original code: $donation->remain + 1, save, delete.
         // Observer does exactly that.
-        
+
         if ($hero) {
              $hero->delete();
         }
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
