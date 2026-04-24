@@ -55,7 +55,7 @@ class BotController extends Controller
         if ($message == '@BOT status') {
             $this->getStatus($sender, $message);
         }
-        if (isGroup) {
+        if ($isGroup) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
             } elseif ($message == '@BOT hero hari ini') {
