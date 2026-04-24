@@ -12,6 +12,7 @@ use App\Traits\BotHeroTrait;
 use App\Traits\BotVolunteerTrait;
 use App\Traits\SendWhatsapp;
 use App\Traits\SendModel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
