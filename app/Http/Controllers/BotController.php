@@ -22,40 +22,31 @@ class BotController extends Controller
 
     public function fromFonnte(Request $request)
     {
-        $data = $request->all();
-
-        // fallback
-        if (empty($data)) {
-            $data = json_decode($request->getContent(), true);
-        }
-
-        // Log
-        Log::info('Fonnte Webhook Incoming', [
-            'all' => $request->all(),
-            'raw' => $request->getContent(),
-            'parsed' => $data,
-        ]);
-        $sender = $data['sender'] ?? null;
-        $message = $data['message'] ?? null;
+        header('Content-Type: application/json; charset=utf-8');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $sender = $data['sender'];
+        $message = $data['message'];
         $media = $data['url'] ?? null;
-        $isGroup = $data['isgroup'] ?? false;
-
         // if ($media) {
         //     dispatch(function () use ($media) {
         //         $this->handleMedia($media);
         //     });
         // }
 
-        // guard
-        if (!$sender || !$message) {
-            Log::warning('Any data got null', ['data' => $data]);
-            return response()->json(['status' => 'ignored']);
-        }
+        //log sementara
+        Log::info('Fonnte Webhook Incoming', [
+            'raw' => $json,
+            'parsed' => $data,
+            'sender' => $sender,
+            'message' => $message,
+            'media' => $media,
+        ]);
 
         if ($message == '@BOT status') {
             $this->getStatus($sender, $message);
         }
-        if (isGroup) {
+        if (str_ends_with($sender, '@g.us')) {
             if ($message == '@BOT donasi hari ini') {
                 $this->getActiveDonation($sender);
             } elseif ($message == '@BOT hero hari ini') {
