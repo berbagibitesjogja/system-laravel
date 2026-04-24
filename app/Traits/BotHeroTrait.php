@@ -13,59 +13,95 @@ trait BotHeroTrait
 {
     use SendWhatsapp, TwoWayEncryption;
 
+    protected function r(array $arr)
+    {
+        return $arr[array_rand($arr)];
+    }
+
+    protected function jitter($min = 10, $max = 60)
+    {
+        return rand($min, $max);
+    }
+
+    protected function greeting($name)
+    {
+        return $this->r([
+            "Halo",
+            "Halo pahlawan",
+            "Hai",
+            "Hi",
+            "Assalamualaikum",
+            "Hey"
+        ]) . " {$name} " . $this->r(["🌱", "✨", "💚", "🙌"]);
+    }
+
+    protected function noise()
+    {
+        return $this->r([
+            "",
+            "\n\n💚 BBJ",
+            "\n\n_Terima kasih_ 🙏",
+            "\n\nSalam BBJ🌿",
+            "\n\n🤖"
+        ]);
+    }
+
     protected function verifyFoodHeroes($sender, $text)
     {
         preg_match('/_(.*?)_/', $text, $match);
         $code = $match[1] ?? null;
         $name = $this->decryptData($code);
+
         $activeDonation = Donation::whereStatus('aktif')->pluck('id');
         $hero = Hero::whereName($name)->whereIn('donation_id', $activeDonation)->first();
-        if ($hero) {
-            $message =
-                "🎉 Halo {$hero->name}!\n\n" .
-                "Terima kasih sudah mendaftar sebagai Food Hero BBJ 🌱✨\n" .
-                "Berikut adalah *kode penukaranmu*: *{$hero->code}* 🔑\n\n" .
-                "📅 Tanggal: " . Carbon::parse($hero->donation->take)->format('d F Y') . "\n" .
-                "⏰ Waktu: " . str_pad($hero->donation->hour, 2, '0', STR_PAD_LEFT) . ":" . str_pad($hero->donation->minute, 2, '0', STR_PAD_LEFT) . "\n" .
-                "📍 Lokasi: {$hero->donation->location}\n" .
-                "🗺️ Maps: {$hero->donation->maps}\n\n";
 
-            if (!empty($hero->donation->message)) {
-                $message .= "📝 *Pesan Khusus:* {$hero->donation->message}\n\n";
-            }
-
-            $message .=
-                "Harap tunjukkan kode ini saat pengambilan ya. Semoga bermanfaat dan tidak terbuang 🌿💚\n\n" .
-                "_Pesan otomatis dari bot BBJ 🤖_";
-
-            $this->send($sender, $message);
-        } else {
-            $this->send($sender, 'Maaf signature key tidak valid');
+        if (!$hero) {
+            return $this->send($sender, 'Maaf signature key tidak valid');
         }
+
+        $message =
+            "🎉 {$this->greeting($hero->name)}\n\n" .
+            "Terima kasih sudah jadi Food Hero 🌱\n" .
+            "Kode kamu: *{$hero->code}*\n\n" .
+            "📅 " . Carbon::parse($hero->donation->take)->format('d F Y') . "\n" .
+            "⏰ " . str_pad($hero->donation->hour, 2, '0', STR_PAD_LEFT) . ":" . str_pad($hero->donation->minute, 2, '0', STR_PAD_LEFT) . "\n" .
+            "📍 {$hero->donation->location}\n" .
+            "🗺 {$hero->donation->maps}\n\n" .
+            ($hero->donation->message ? "📝 *Pesan Khusus:* {$hero->donation->message}\n\n" : "") .
+            "Harap tunjukkan kode ini saat pengambilan ya. Semoga bermanfaat dan tidak terbuang 🌿💚" .
+            $this->noise();
+
+        $this->send($sender, $message);
     }
+
     protected function verifyNotify($sender, $text)
     {
         preg_match('/_(.*?)_/', $text, $match);
         $code = $match[1] ?? null;
+
         $data = explode(',', $this->decryptData($code));
-        $name = $data[0];
-        $email = $data[1];
-        $phone = $data[2];
+
+        [$name, $email, $phone] = $data;
+
         try {
             Notify::create(compact('name', 'email', 'phone'));
+
             $this->send(
                 $sender,
-                "Terima kasih {$name}, verifikasi berhasil! 🎉\n\n" .
-                    "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
-                    "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊"
+                "{$this->greeting($name)}\n\nNotifikasi aktif 🌱\nKamu akan dapat info donasi otomatis." .
+                $this->noise()
             );
         } catch (\Throwable $th) {
             $this->send(
                 $sender,
-                "Hai {$name}, kamu sebelumnya sudah terdaftar dan notifikasi akan kamu dapatkan ketika ada donasi, ditunggu yaa! 🎉"
+                "Hai {$name}, verifikasi berhasil! 🎉\n\n" .
+                    "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
+                    "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊" .
+                    $this->noise()
             );
         }
     }
+
     protected function getReplyFromHeroes($hero, $text)
     {
         $message = '> Balasan Heroes' . " \n\n" . $hero->name . "\n_Kode : " . $hero->code . "_\n\n" . $text;
@@ -75,28 +111,37 @@ trait BotHeroTrait
     protected function getAllActiveHero($sender)
     {
         $activeDonation = Donation::where('status', 'aktif')->first();
-        $allHero = Hero::where('donation_id', $activeDonation->id)->get(['name', 'code']);
-        $message = '';
-        $message = $message . 'Daftar heroes hari ini' . " \n ";
-        $message = $message . '_Jumlah : ' . $allHero->count() . '_' . " \n ";
+
+        $allHero = Hero::where('donation_id', $activeDonation->id)
+            ->get(['name', 'code'])
+            ->shuffle();
+
+        $message = "📋 Daftar Hero Hari Ini\n"
+            . "_Jumlah: {$allHero->count()}_\n";
+
         foreach ($allHero as $hero) {
-            $message = $message . " \n " . $hero->name;
-            $message = $message . " \n " . $hero->code;
+            $message .= "\n{$hero->name}\n{$hero->code}\n";
         }
+
         $this->send($sender, $message, 'SECOND');
     }
 
     protected function getAllNotYetHero($sender)
     {
         $activeDonation = Donation::where('status', 'aktif')->first();
-        $notyetHero = Hero::where('donation_id', $activeDonation->id)->where('status', 'belum')->get(['name', 'code']);
-        $message = '';
-        $message = $message . 'Daftar yang belum mengambil' . " \n ";
-        $message = $message . '_Jumlah : ' . $notyetHero->count() . '_' . " \n ";
+
+        $notyetHero = Hero::where('donation_id', $activeDonation->id)
+            ->where('status', 'belum')
+            ->get(['name', 'code'])
+            ->shuffle();
+
+        $message = "⏳ Belum Diambil\n"
+            . "_Jumlah: {$notyetHero->count()}_\n";
+
         foreach ($notyetHero as $hero) {
-            $message = $message . " \n " . $hero->name;
-            $message = $message . " \n " . $hero->code;
+            $message .= "\n{$hero->name}\n{$hero->code}\n";
         }
+
         $this->send($sender, $message, 'SECOND');
     }
 
@@ -109,25 +154,39 @@ trait BotHeroTrait
     protected function reminderToday($sender)
     {
         $activeDonation = Donation::where('status', 'aktif')->first();
-        $allActiveHero = Hero::where('donation_id', $activeDonation->id)->get(['name', 'phone']);
-        $delay = 30;
-        foreach ($allActiveHero as $hero) {
-            $message = "🍽️ Halo {$hero->name}!\n\n"
-                . "Ada kabar baik nih ✨ Surplus food dari *Berbagi Bites Jogja* sudah bisa diambil:\n\n"
+
+        $heroes = Hero::where('donation_id', $activeDonation->id)
+            ->get(['name', 'phone'])
+            ->shuffle();
+
+        $delay = 10;
+
+        foreach ($heroes as $hero) {
+
+            $templates = [
+                "{$this->greeting($hero->name)}\n\n🍽 Makanan sudah siap diambil\n",
+                "📢 {$hero->name}, info BBJ!\n\n📍 {$activeDonation->location}\nJangan lupa ambil ya 🌱",
+                "{$this->greeting($hero->name)}\n\nSurplus food sudah tersedia ✨\n📍 {$activeDonation->location}"
+            ];
+
+            $message = "Ada kabar baik nih ✨ Surplus food dari *Berbagi Bites Jogja* sudah bisa diambil:\n\n"
                 . "⏰ *Waktu:* " . str_pad($activeDonation->hour, 2, '0', STR_PAD_LEFT) . ":" . str_pad($activeDonation->minute, 2, '0', STR_PAD_LEFT) . "\n"
                 . "📍 *Lokasi:* {$activeDonation->location}\n"
                 . "{$activeDonation->maps}\n\n"
                 . "✅ Jangan lupa datang ya, semoga bermanfaat dan jangan sampai terbuang 🌱💚\n\n"
                 . "⚠️ Catatan:\n"
                 . "- Jika tidak bisa mengambil, mohon konfirmasi 🙏\n"
-                . "- Makanan yang tidak diambil hingga waktu yang ditentukan akan dialihkan ke Food Heroes lain\n\n"
-                . "_Pesan ini dikirim otomatis oleh bot BBJ 🤖_";
-            $phone = $hero->phone;
-            dispatch(function () use ($phone, $message) {
-                $this->send($phone, $message, AppConfiguration::useWhatsapp());
+                . "- Makanan yang tidak diambil hingga waktu yang ditentukan akan dialihkan ke Food Heroes lain\n\n";
+
+            $message = $this->r($templates) . $this->noise();
+
+            dispatch(function () use ($hero, $message) {
+                $this->send($hero->phone, $message, AppConfiguration::useWhatsapp());
             })->delay(now()->addSeconds($delay));
-            $delay += 30;
+
+            $delay += $this->jitter(10, 40);
         }
+
         $message = 'Akan mengirimkan kepada ' . $allActiveHero->count() . ' hero secara bertahap';
         $this->send($sender, $message, 'SECOND');
         $message = 'Berhasil mengirimkan kepada ' . $allActiveHero->count() . ' hero';
@@ -139,11 +198,20 @@ trait BotHeroTrait
     protected function reminderLastCall($jam, $sender)
     {
         $activeDonation = Donation::where('status', 'aktif')->first();
-        $notyetHero = Hero::where('donation_id', $activeDonation->id)->where('status', 'belum')->get(['name', 'phone']);
+
+        $notyetHero = Hero::where('donation_id', $activeDonation->id)
+            ->where('status', 'belum')
+            ->get(['name', 'phone'])
+            ->shuffle();
+
         $jam = str_replace('@BOT ingatkan hero yang belum ', '', $jam);
-        $delay = 10;
+
+        $delay = 5;
+
         foreach ($notyetHero as $hero) {
-            $message = "⏰ Halo {$hero->name}!\n\n"
+
+            $message =
+                "{$this->greeting($hero->name)}\n\n"
                 . "Kami dari *Berbagi Bites Jogja* ingin mengingatkan kembali untuk mengambil makanan di:\n"
                 . "📍 {$activeDonation->location}\n"
                 . "{$activeDonation->maps}\n\n"
@@ -152,13 +220,15 @@ trait BotHeroTrait
                 . "⚠️ Catatan:\n"
                 . "- Jika tidak bisa mengambil, mohon konfirmasi 🙏\n"
                 . "- Makanan yang tidak diambil hingga waktu yang ditentukan akan dialihkan ke Food Heroes lain\n\n"
-                . "_Pesan ini dikirim otomatis oleh bot BBJ 🤖_";
-            $phone = $hero->phone;
-            dispatch(function () use ($phone, $message) {
-                $this->send($phone, $message, AppConfiguration::useWhatsapp());
+                . $this->noise();
+
+            dispatch(function () use ($hero, $message) {
+                $this->send($hero->phone, $message, AppConfiguration::useWhatsapp());
             })->delay(now()->addSeconds($delay));
-            $delay += 10;
+
+            $delay += $this->jitter(5, 20);
         }
+
         $message = 'Akan mengirimkan kepada ' . $notyetHero->count() . ' hero secara bertahap';
         $this->send($sender, $message, 'SECOND');
         $message = 'Berhasil mengirimkan kepada ' . $notyetHero->count() . ' hero';
@@ -170,34 +240,44 @@ trait BotHeroTrait
     protected function gemini($sender, $text)
     {
         return true;
-        $gemini =  new ChatController();
+
+        $gemini = new ChatController();
         $response = $gemini->chat($text);
-        $spam = str_starts_with($response[0], 'Maaf');
-        if (!$spam) {
+
+        if (!str_starts_with($response[0], 'Maaf')) {
             $this->send($sender, $response[0], 'SECOND');
         }
     }
 
     protected function sendNotification(Donation $donation, string $hour)
     {
-        $delay = 10;
-        $notif = Notify::all();
+        $notif = Notify::all()->shuffle();
+
         $date = Carbon::parse($donation->take)->locale('id');
         $formatted = $date->translatedFormat('l, d F Y');
+
+        $delay = 10;
+
         foreach ($notif as $hero) {
-            $phone = $hero->phone;
-                $message = "*📢 Ada donasi aktif BBJ dari {$donation->sponsor->name}!*\n\n🦸‍♂{$donation->quota} orang\n🗓$formatted\n🕧" . $hour . "WIB\n📍{$donation->location}\n{$donation->maps}";
 
-            if (!empty($donation->message)) {
-                $message .= "\n\n📝 *Pesan Khusus:* {$donation->message}";
-            }
+            $message =
+                "📢 {$donation->sponsor->name}\n"
+                . "{$donation->quota} orang\n"
+                . "{$formatted}\n"
+                . "{$hour} WIB\n"
+                . "{$donation->location}\n"
+                . "{$donation->maps}\n"
+                . ($donation->message ? "\n\n📝 *Pesan Khusus:* {$donation->message}" : "")
+                . "\n\n🦸🏻 Ayo, jadi Food Heroes dan bantu BBJ menyelamatkan bumi dengan daftar di sini https://berbagibitesjogja.com/form"
+                . $this->noise();
 
-            $message .= "\n\n🦸🏻 Ayo, jadi Food Heroes dan bantu BBJ menyelamatkan bumi dengan daftar di sini https://berbagibitesjogja.com/form" . "\n\nTerima kasih 🙏\n\n_pesan ini dikirim otomatis oleh bot_";
-            dispatch(function () use ($phone, $message) {
-                $this->send($phone, $message, AppConfiguration::useWhatsapp());
+            dispatch(function () use ($hero, $message) {
+                $this->send($hero->phone, $message, AppConfiguration::useWhatsapp());
             })->delay(now()->addSeconds($delay));
-            $delay += 10;
+
+            $delay += $this->jitter(10, 35);
         }
+
         Notify::truncate();
     }
 }

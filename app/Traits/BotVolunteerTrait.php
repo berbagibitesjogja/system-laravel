@@ -104,7 +104,21 @@ trait BotVolunteerTrait
     protected function getStatus($sender)
     {
         Log::info("Bot status checked by {$sender}");
-        $this->send($sender, 'Bot bisa digunakan.', AppConfiguration::useWhatsapp());
+        $templates = [
+            'Bot aktif dan siap membantu! 😊',
+            'Sinyal kosmik stabil. Bot siap menerima perintah dari planet Bumi 🌍',
+            'Bot dalam keadaan baik! Ada yang bisa saya bantu? 🌟',
+            'Aku bukan manusia, tapi entah kenapa ngerti perasaan kamu sekarang... aneh ya 🤔',
+            "You underestimate the power of the Bot. 🌑",
+            'Human beings have a remarkable ability to accept the abnormal and make it normal. Sadly, this bot is also affected by that. But don\'t worry, I\'m here to help you! 🤖',
+            'Manusia sering merasakan cinta, aku when yh. 💻',
+            'Oh ada manusia, apa kabar? Aku baik-baik saja kok, siap membantu kamu! 😊',
+            'When stupid ideas work, they become genius ideas. But when they don\'t work, they are just stupid ideas. Luckily for me, I\'m a genius idea! 🤖',
+            'Barusan aku debat dengan server lain soal arti hidup. Tapi ya sudahlah, kamu butuh apa? 💬',
+            'What? -Joe Biden',
+        ];
+        $message = $templates[array_rand($templates)];
+        $this->send($sender, $message, AppConfiguration::useWhatsapp());
     }
 
     protected function createMonthly($sender, $message)
