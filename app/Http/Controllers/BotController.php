@@ -85,6 +85,8 @@ class BotController extends Controller
         } else {
             $this->getReplyFromPersonal($sender, $message, $media);
         }
+
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function getReplyFromPersonal($sender, $text, $media)
