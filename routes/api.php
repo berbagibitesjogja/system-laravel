@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\FormJobController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BotController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('university/{university}/faculty', [HeroController::class, 'getFaculties']);
