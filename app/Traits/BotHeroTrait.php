@@ -187,9 +187,9 @@ trait BotHeroTrait
             $delay += $this->jitter(10, 40);
         }
 
-        $message = 'Akan mengirimkan kepada ' . $allActiveHero->count() . ' hero secara bertahap';
+        $message = 'Akan mengirimkan kepada ' . $heroes->count() . ' hero secara bertahap';
         $this->send($sender, $message, 'SECOND');
-        $message = 'Berhasil mengirimkan kepada ' . $allActiveHero->count() . ' hero';
+        $message = 'Berhasil mengirimkan kepada ' . $heroes->count() . ' hero';
         dispatch(function () use ($sender, $message) {
             $this->send($sender, $message, 'SECOND');
         })->delay(now()->addSeconds($delay));
