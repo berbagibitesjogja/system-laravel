@@ -178,7 +178,7 @@ trait BotHeroTrait
                 . "- Jika tidak bisa mengambil, mohon konfirmasi 🙏\n"
                 . "- Makanan yang tidak diambil hingga waktu yang ditentukan akan dialihkan ke Food Heroes lain\n\n";
 
-            $message = $this->r($templates) . $this->noise();
+            $message = $this->r($templates) . $message . $this->noise();
 
             dispatch(function () use ($hero, $message) {
                 $this->send($hero->phone, $message, AppConfiguration::useWhatsapp());
