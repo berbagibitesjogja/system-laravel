@@ -75,6 +75,6 @@ jobs:
           port: ${{ secrets.HOST_PORT }}
           script: |
             cd /media/${{ github.event.repository.name }}
-            docker compose pull
-            docker compose down
-            docker compose up -d
+            sudo podman-compose pull
+            sudo podman-compose down
+            sudo podman-compose up -d
