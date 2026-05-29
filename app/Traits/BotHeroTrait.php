@@ -8,6 +8,7 @@ use App\Models\Donation\Donation;
 use App\Models\Heroes\Hero;
 use App\Models\Volunteer\Notify;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 trait BotHeroTrait
 {
@@ -79,7 +80,17 @@ trait BotHeroTrait
         preg_match('/_(.*?)_/', $text, $match);
         $code = $match[1] ?? null;
 
-        $data = explode(',', $this->decryptData($code));
+        $payload = $code ? $this->decryptData($code) : false;
+
+        if (!$payload) {
+            return $this->send($sender, 'Maaf signature key tidak valid');
+        }
+
+        $data = array_map('trim', explode(',', $payload));
+
+        if (count($data) < 3) {
+            return $this->send($sender, 'Maaf signature key tidak valid');
+        }
 
         [$name, $email, $phone] = $data;
 
@@ -94,9 +105,7 @@ trait BotHeroTrait
         } catch (\Throwable $th) {
             $this->send(
                 $sender,
-                "Hai {$name}, verifikasi berhasil! 🎉\n\n" .
-                    "Fitur notifikasi BBJ kamu sudah aktif. Kamu akan otomatis menerima info donasi ketika tersedia 🌱\n\n" .
-                    "Catatan: Notifikasi ini berlaku *satu kali*. Setelah menerima notifikasi, kamu perlu daftar lagi jika ingin mendapatkan pemberitahuan berikutnya 😊" .
+                "{$this->greeting($name)}, kamu sebelumnya sudah terdaftar dan notifikasi akan kamu dapatkan ketika ada donasi, ditunggu yaa! 🎉" .
                     $this->noise()
             );
         }
@@ -251,6 +260,7 @@ trait BotHeroTrait
 
     protected function sendNotification(Donation $donation, string $hour)
     {
+        Log::info("Sending notification for donation {$donation->id} to notify list");
         $notif = Notify::all()->shuffle();
 
         $date = Carbon::parse($donation->take)->locale('id');

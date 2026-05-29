@@ -11,11 +11,22 @@ trait SendModel
 {
     protected function askModel($text)
     {
-        $url = AppConfiguration::where('key', "MODEL_ENDPOINT")->first()->value;
-        $response = Http::timeout(60)->post($url . '/chat', [
+        $url = AppConfiguration::where('key', 'MODEL_ENDPOINT')->value('value');
+
+        if (!$url) {
+            return 'Maaf, layanan model belum dikonfigurasi.';
+        }
+
+        $response = Http::timeout(60)->post(rtrim($url, '/') . '/chat', [
             'message' => $text,
         ]);
+
+        if (!$response->successful()) {
+            return 'Maaf, layanan model sedang tidak tersedia.';
+        }
+
         $data = $response->json();
-        return $data['response'];
+
+        return $data['response'] ?? 'Maaf, layanan model sedang tidak tersedia.';
     }
 }
