@@ -286,6 +286,8 @@ trait BotHeroTrait
             })->delay(now()->addSeconds($delay));
 
             $delay += $this->jitter(10, 35);
+
+            Log::info("Notification sent to {$hero->name} ({$hero->phone}) for donation {$donation->id}");
         }
 
         Notify::truncate();
