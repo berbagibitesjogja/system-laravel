@@ -7,7 +7,7 @@
                 ← Kembali
             </x-btn-link>
         </div>
-        
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="bg-white rounded-2xl border border-navy-100 shadow-md overflow-hidden">
                 <div class="bg-gradient-to-r from-navy-500 to-tosca-500 p-6 text-white">
@@ -17,20 +17,22 @@
 
                 <form action="{{ route('reimburse.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
                     @csrf
-                    
+
                     <x-input name="method" label="Metode Pembayaran" placeholder="Contoh: BCA/BNI/ShopeePay/GoPay" />
-                    
+
                     <x-input name="target" label="Nomor Tujuan" placeholder="Contoh: 08912134452/1110003333" />
+
+                    <x-input name="notes" label="Catatan (Wajib)" placeholder="Contoh: Pemesanan GoCar untuk aksi 10 Sept 2026 Hotel IT" />
 
                     <div class="mb-6">
                         <label class="block mb-2 text-sm font-semibold text-navy-700">Upload Invoice</label>
                         <div class="relative">
                             <input type="file" name="file" id="file"
-                                class="w-full text-sm text-navy-600 
-                                    file:mr-4 file:py-2.5 file:px-5 
-                                    file:rounded-xl file:border-0 
-                                    file:text-sm file:font-semibold 
-                                    file:bg-tosca-500 file:text-white 
+                                class="w-full text-sm text-navy-600
+                                    file:mr-4 file:py-2.5 file:px-5
+                                    file:rounded-xl file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-tosca-500 file:text-white
                                     hover:file:bg-tosca-600
                                     file:transition-colors file:duration-300
                                     file:cursor-pointer

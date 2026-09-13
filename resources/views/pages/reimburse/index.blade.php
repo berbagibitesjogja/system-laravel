@@ -19,6 +19,7 @@
                     <x-th class="hidden sm:table-cell">Pengajuan</x-th>
                     <x-th class="hidden sm:table-cell">Pembayaran</x-th>
                     <x-th>Status</x-th>
+                    <x-th class="hidden sm:table-cell">Notes</x-th>
                     <x-th class="text-center">Aksi</x-th>
                 </x-slot:head>
                 <x-slot:body>
@@ -60,6 +61,7 @@
                                     </span>
                                 @endif
                             </x-td>
+                            <x-td class="hidden sm:table-cell">{{ $item->notes ?? '-' }}</x-td>
                             <x-td>
                                 <div class="flex justify-center gap-2">
                                     @if ($item->done == false)

@@ -19,7 +19,7 @@ class ReimburseController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->role!=='super' && !in_array($user->division->name,['Bendahara','Operational Manager'])) {
+        if ($user->role !== 'super' && !in_array($user->division->name, ['Bendahara', 'Operational Manager'])) {
             return back();
         }
         $reimburse = Reimburse::with('user')->latest()->get();
@@ -33,47 +33,59 @@ class ReimburseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "file" => 'file|image',
-            "method" => 'required|string',
-            "target" => 'required|string',
+            'file' => 'file|image',
+            'method' => 'required|string',
+            'target' => 'required|string',
+            'notes' => 'required|string',
         ]);
         $file = $request->file('file');
         $filePath = $file->getRealPath();
 
         try {
             $client = Gemini::client(config('gemini.api_key'));
-            $result = $client->generativeModel("models/gemini-2.5-flash")
-                ->generateContent(["Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting", new Blob(
-                    mimeType: MimeType::IMAGE_JPEG,  // or IMAGE_PNG
-                    data: base64_encode(file_get_contents($filePath))
-                )])
+            $result = $client
+                ->generativeModel('models/gemini-2.5-flash')
+                ->generateContent([
+                    'Berikan saya jawaban berupa total harga yang ada pada gambar berikut. hanya dalam bentuk integer tanpa formatting. apabila gambar yang diterima bukan merupakan invoice maka hanya hasilkan 0 tanpa formatting',
+                    new Blob(
+                        mimeType: MimeType::IMAGE_JPEG, // or IMAGE_PNG
+                        data: base64_encode(file_get_contents($filePath)),
+                    ),
+                ])
                 ->text();
-            if ($result != "0") {
+            if ($result != '0') {
                 $path = $file->store('reimburse', 'public');
-                $reimburse = Reimburse::create(["amount" => (int) $result, "user_id" => Auth::id(), "file" => $path, "method" => $request->method, "target" => $request->target]);
+                $reimburse = Reimburse::create([
+                    'amount' => (int) $result,
+                    'user_id' => Auth::id(),
+                    'file' => $path,
+                    'method' => $request->method,
+                    'target' => $request->target,
+                    'notes' => $request->notes,
+                ]);
                 $this->createReimburse(Auth::user(), $reimburse);
-                return back()->with("success", "Reimbursement submitted!");
+                return back()->with('success', 'Reimbursement submitted!');
             }
         } catch (\Throwable $th) {
             logs()->info(json_encode($th));
             logs()->info(json_encode($th->getMessage()));
             BotController::sendForPublic('120363399651067268@g.us', "[ERROR] Reimburse Store\n" . $th->getMessage());
         }
-        return back()->with("error", "Reimbursement failed!");
+        return back()->with('error', 'Reimbursement failed!');
     }
 
     public function destroy(Reimburse $reimburse)
     {
-        $this->send($reimburse->user->phone, "Reimburse ditolak");
+        $this->send($reimburse->user->phone, 'Reimburse ditolak');
         Storage::disk('public')->delete($reimburse->file);
         $reimburse->delete();
-        return back()->with("success", "Reimbursement canceled!");
+        return back()->with('success', 'Reimbursement canceled!');
     }
     public function update(Reimburse $reimburse)
     {
-        $am = "Rp " . number_format($reimburse->amount, 0, ',', '.');
+        $am = 'Rp ' . number_format($reimburse->amount, 0, ',', '.');
         $this->send($reimburse->user->phone, "Reimburse sebesar {$am} telah diberikan");
-        $reimburse->update(["done" => true]);
-        return back()->with("success", "Reimbursement success!");
+        $reimburse->update(['done' => true]);
+        return back()->with('success', 'Reimbursement success!');
     }
 }
