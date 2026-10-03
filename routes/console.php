@@ -12,4 +12,4 @@ Schedule::command('follow-up:start')->timezone('Asia/Jakarta')->weeklyOn(1,'19.0
 Schedule::command('clear:backup')->timezone('Asia/Jakarta')->dailyAt('20.00')->name('Hapus backup');
 Schedule::command('clear:cancelation')->timezone('Asia/Jakarta')->dailyAt('01.00')->name('Hapus banned');
 // Schedule::command('calendar:send-notification')->timezone('Asia/Jakarta')->dailyAt('21.00')->name('Kirim notifikasi acara');
-Schedule::command('report:daily')->timezone('Asia/Jakarta')->dailyAt('23.00')->name('Buat report');
+// Schedule::command('report:daily')->timezone('Asia/Jakarta')->dailyAt('23.00')->name('Buat report');
