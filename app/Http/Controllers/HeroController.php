@@ -102,6 +102,11 @@ class HeroController extends Controller implements HasMiddleware
 
         $code = $this->generate();
 
+        // hardcoded blacklist toh bentar lagi ganti sistem :smile:
+        if ($request['phone'] == '85156908866' && stripos($request['name'], 'clein') !== false) {
+            return back()->with('error', 'Tertolak');
+        }
+
         Hero::create([
             'name' => $request['name'],
             'phone' => '62' . $request['phone'], // Prefix added
