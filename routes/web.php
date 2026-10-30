@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware('guest')->group(function () {
     Route::get('form', [HeroController::class, 'create'])->name('form.create');
-    Route::get('notify', [NotifyController::class, 'form'])->name('notify.form');
+    Route::redirect('notify', 'form')->name('notify.form');
     Route::post('form', [HeroController::class, 'store'])->name('hero.store');
 });
 Route::get('hero/cancel', [HeroController::class, 'cancel'])->name('hero.cancel');
