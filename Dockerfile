@@ -6,6 +6,8 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     supervisor \
+    git \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN install-php-extensions \
