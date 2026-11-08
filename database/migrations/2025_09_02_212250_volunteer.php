@@ -53,7 +53,9 @@ return new class extends Migration
             $table->integer('amount');
             $table->boolean('done')->default(false);
             $table->string('file');
+            $table->string('payment')->nullable();
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

@@ -75,10 +75,18 @@
                                 <span class="font-bold text-lg text-tosca-600">
                                     Rp {{ number_format($item->amount, 0, ',', '.') }}
                                 </span>
-                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
-                                    class="text-sm text-tosca-500 hover:text-tosca-600 font-medium transition-colors">
-                                    📄 Lihat File
-                                </a>
+                                <div class="flex items-center gap-3">
+                                    <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                        class="text-sm text-tosca-500 hover:text-tosca-600 font-medium transition-colors">
+                                        📄 Lihat File
+                                    </a>
+                                    @if ($item->payment)
+                                        <a href="{{ asset('storage/' . $item->payment) }}" target="_blank"
+                                            class="text-sm text-lime-800 hover:text-lime-900 font-medium transition-colors">
+                                            📄 Bukti TF
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @empty

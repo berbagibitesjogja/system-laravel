@@ -16,10 +16,16 @@ use Illuminate\Support\Facades\Storage;
 class ReimburseController extends Controller
 {
     use SendWhatsapp, BotVolunteerTrait;
+    private function isAuthorizedManager($user): bool
+    {
+        return $user->role === 'super'
+            || in_array($user->division?->name, ['Bendahara', 'Operational Manager']);
+    }
+
     public function index()
     {
         $user = Auth::user();
-        if ($user->role !== 'super' && !in_array($user->division->name, ['Bendahara', 'Operational Manager'])) {
+        if (!$this->isAuthorizedManager($user)) {
             return back();
         }
         $reimburse = Reimburse::with('user')->latest()->get();
@@ -33,7 +39,7 @@ class ReimburseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'file|image',
+            'file' => 'required|file|image',
             'method' => 'required|string',
             'target' => 'required|string',
             'notes' => 'required|string',
@@ -76,16 +82,68 @@ class ReimburseController extends Controller
 
     public function destroy(Reimburse $reimburse)
     {
-        $this->send($reimburse->user->phone, 'Reimburse ditolak');
-        Storage::disk('public')->delete($reimburse->file);
+        if (!$this->isAuthorizedManager(Auth::user())) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk tindakan ini.');
+        }
+
+        try {
+            $this->send($reimburse->user->phone, 'Reimburse ditolak');
+        } catch (\Throwable $th) {
+            logs()->error('Reimburse Destroy WA Error: ' . $th->getMessage());
+        }
+
+        if ($reimburse->file) {
+            Storage::disk('public')->delete($reimburse->file);
+        }
+        if ($reimburse->payment) {
+            Storage::disk('public')->delete($reimburse->payment);
+        }
+
         $reimburse->delete();
         return back()->with('success', 'Reimbursement canceled!');
     }
-    public function update(Reimburse $reimburse)
+
+    public function update(Request $request, Reimburse $reimburse)
     {
+        if (!$this->isAuthorizedManager(Auth::user())) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk tindakan ini.');
+        }
+
+        if ($reimburse->done) {
+            return back()->with('error', 'Reimburse ini sudah diselesaikan sebelumnya.');
+        }
+
+        $request->validate([
+            'payment' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+        ], [
+            'payment.required' => 'Bukti transfer wajib diunggah.',
+            'payment.file' => 'Berkas bukti transfer tidak valid.',
+            'payment.mimes' => 'Bukti transfer harus berupa gambar (JPG, PNG, WEBP) atau PDF.',
+            'payment.max' => 'Ukuran bukti transfer maksimal 5MB.',
+        ]);
+
+        $path = $request->file('payment')->store('payment', 'public');
+
+        if ($reimburse->payment) {
+            Storage::disk('public')->delete($reimburse->payment);
+        }
+
+        $reimburse->update([
+            'payment' => $path,
+            'done' => true,
+        ]);
+
         $am = 'Rp ' . number_format($reimburse->amount, 0, ',', '.');
-        $this->send($reimburse->user->phone, "Reimburse sebesar {$am} telah diberikan");
-        $reimburse->update(['done' => true]);
-        return back()->with('success', 'Reimbursement success!');
+        $paymentUrl = asset('storage/' . $path);
+        try {
+            $this->send(
+                $reimburse->user->phone,
+                "Reimburse sebesar {$am} telah diberikan.\nBukti transfer: {$paymentUrl}"
+            );
+        } catch (\Throwable $th) {
+            logs()->error('Reimburse Update WA Error: ' . $th->getMessage());
+        }
+
+        return back()->with('success', 'Reimbursement berhasil dikonfirmasi!');
     }
 }
